@@ -49,46 +49,28 @@
       <div class="container is-max-desktop">
         <div class="columns is-centered">
           <div class="column has-text-centered">
-            <h1 class="title is-1 publication-title">OpenMask3D 🛋<br />
-              <p class="title is-3 publication-title">Open-Vocabulary 3D Instance Segmentation </p>
+            <h1 class="title is-1 publication-title">OpenPocket3D<br />
+              <p class="title is-3 publication-title">Plug-and-Play Open-Ended 3D Instance Segmentation via Pocket
+                Vocabularies </p>
             </h1>
 
-            <h1 class="title is-4" style="color: #5c5c5c;">NeurIPS 2023</h1>
+            <h1 class="title is-4" style="color: #5c5c5c;">Under Review</h1>
 
             <div class="is-size-5 publication-authors">
               <span class="author-block">
-                <a href="https://aycatakmaz.github.io/">Ay&#231;a Takmaz</a><sup>1*</sup>,</span>
-              <span class="author-block">
-                <a href="https://elisabettafedele.github.io/">Elisabetta Fedele</a><sup>1*</sup>,
-              </span>
-              <br />
-              <span class="author-block">
-                <a href="https://studios.disneyresearch.com/people/bob-sumner/">Robert W. Sumner</a><sup>1</sup>,
-              </span>
-              <span class="author-block">
-                <a href="https://people.inf.ethz.ch/pomarc/">Marc Pollefeys</a><sup>1,2</sup>,
-              </span>
-              <span class="author-block">
-                <a href="https://federicotombari.github.io/">Federico Tombari</a><sup>3</sup>,
-              </span>
-              <span class="author-block">
-                <a href="https://francisengelmann.github.io/">Francis Engelmann</a><sup>1,3</sup>
+                Anonymous Authors
               </span>
             </div>
 
             <div class="is-size-5 publication-authors">
-              <span class="author-block" style="margin-right: 1em;"><sup>1</sup>ETH Zürich</span>
-              <span class="author-block" style="margin-right: 1em;"><sup>2</sup>Microsoft</span>
-              <span class="author-block" style="margin-right: 1em;"><sup>3</sup>Google</span></br>
-              <span class="author-block" style="margin-right: 1em; font-size: 18px;"><sup>*</sup>Equal
-                contribution</span>
+              <span class="author-block" style="margin-right: 1em;">Anonymous Organization</span>
             </div>
 
             <div class="column has-text-centered">
               <div class="publication-links">
                 <!-- PDF Link. -->
                 <span class="link-block">
-                  <a href="static/pdf/openmask3d.pdf" class="external-link button is-normal is-rounded is-dark">
+                  <a href="javascript:void(0);" class="external-link button is-normal is-rounded is-dark">
                     <span class="icon">
                       <i class="fas fa-file-pdf"></i>
                     </span>
@@ -96,7 +78,7 @@
                   </a>
                 </span>
                 <span class="link-block">
-                  <a href="https://arxiv.org/abs/2306.13631" class="external-link button is-normal is-rounded is-dark">
+                  <a href="javascript:void(0);" class="external-link button is-normal is-rounded is-dark">
                     <span class="icon">
                       <i class="ai ai-arxiv"></i>
                     </span>
@@ -105,8 +87,7 @@
                 </span>
                 <!-- Code Link. -->
                 <span class="link-block">
-                  <a href="https://github.com/OpenMask3D/openmask3d"
-                    class="external-link button is-normal is-rounded is-dark">
+                  <a href="javascript:void(0);" class="external-link button is-normal is-rounded is-dark">
                     <span class="icon">
                       <i class="fab fa-github"></i>
                     </span>
@@ -146,25 +127,24 @@
           <h2 class="title is-3">Abstract</h2>
           <div class="content has-text-justified">
             <p>
-              We introduce the task of open-vocabulary 3D instance segmentation.
-              Current approaches for 3D instance segmentation can typically only recognize object categories from a
-              pre-defined closed set of classes that are annotated in the training datasets.
-              This results in important limitations for real-world applications where one might need to perform tasks
-              guided by novel,
-              open-vocabulary queries related to a wide variety of objects.
-              Recently, open-vocabulary 3D scene understanding methods have emerged to address this problem by learning
-              queryable features for each point in the scene.
-              While such a representation can be directly employed to perform semantic segmentation, existing methods
-              cannot separate multiple object instances.
-              In this work, we address this limitation, and propose OpenMask3D, which is a zero-shot approach for
-              open-vocabulary 3D instance segmentation.
-              Guided by predicted class-agnostic 3D instance masks, our model aggregates per-mask features via
-              multi-view fusion of CLIP-based image embeddings.
-              Experiments and ablation studies on ScanNet200 and Replica show that OpenMask3D outperforms other
-              open-vocabulary methods,
-              especially on the long-tail distribution. Qualitative experiments further showcase OpenMask3D's ability to
-              segment
-              object properties based on free-form queries describing geometry, affordances, and materials.
+              Open-vocabulary 3D instance segmentation recognizes objects beyond predefined training categories,
+              but assigning semantic labels still often requires text queries at inference time. This assumption
+              conflicts with open-ended 3D scene understanding, where object names may be unknown before observing
+              the scene. Recent open-ended 3D methods reduce this dependence by generating labels from visual inputs,
+              but they often aggregate all associated views or query a language model for each proposal, producing
+              noisy evidence and increasing the cost of 3D aggregation and label assignment. We propose OpenPocket3D,
+              a modular framework that converts existing open-vocabulary 3D instance segmentation models into open-ended
+              predictors without additional training. For each 3D proposal, OpenPocket3D ranks views using a visibility
+              score and constructs an instance-wise pocket vocabulary from labels localized by the internal attention
+              maps of a 2D vision-language model. It then selects the final label by combining 3D-text semantic
+              similarity
+              from a frozen open-vocabulary backbone with geometric consistency from projected 3D masks. By directly
+              reusing precomputed 3D masks and instance features from the backbone, OpenPocket3D avoids dense point-wise
+              feature lifting and proposal-wise language querying while remaining applicable to diverse open-vocabulary
+              backbones. Experiments on ScanNet200, ScanNet++, and Replica show that OpenPocket3D can be plugged into
+              various open-vocabulary backbones and VLM label generators. Under the same open-ended setting as previous
+              work, predictors obtained by applying OpenPocket3D remain competitive across backbones, and the strongest
+              configuration reaches state-of-the-art performance on most ScanNet200 and ScanNet++ metrics.
             </p>
           </div>
         </div>
@@ -445,12 +425,7 @@
 
                 <h2 class="title is-3">BibTeX</h2>
                 <pre><code>
-@inproceedings{takmaz2023openmask3d,
-  title={{OpenMask3D: Open-Vocabulary 3D Instance Segmentation}},
-  author={Takmaz, Ay{\c{c}}a and Fedele, Elisabetta and Sumner, Robert W. and Pollefeys, Marc and Tombari, Federico and Engelmann, Francis},
-  booktitle={Advances in Neural Information Processing Systems (NeurIPS)},
-year={2023}
-}</code></pre>
+</code></pre>
 
   </section>
 
