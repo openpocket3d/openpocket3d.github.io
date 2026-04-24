@@ -1,1 +1,1 @@
-# OpenPocket3D: Plug-and-Play Open-Ended 3D Instance Segmentation via Pocket Vocabularies
+# OpenPocket3D
