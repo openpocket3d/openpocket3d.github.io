@@ -38,6 +38,16 @@
   <script src="./static/js/bulma-carousel.min.js"></script>
   <script src="./static/js/bulma-slider.min.js"></script>
   <script src="./static/js/index.js"></script>
+
+  <!-- Three.js ImportMap -->
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.158.0/build/three.module.js",
+        "three/addons/": "https://unpkg.com/three@0.158.0/examples/jsm/"
+      }
+    }
+  </script>
 </head>
 
 <body>
@@ -159,32 +169,116 @@
           <h2 class="title is-3">Visual Examples</h2>
           <div class="content has-text-justified">
             <p>
-              Below are examples of 3D instance segmentation demonstrating the capabilities of OpenPocket3D.
+              Below are examples of open-ended 3D instance segmentation demonstrating the capabilities of OpenPocket3D.
             </p>
           </div>
-          
+
           <div class="columns is-centered">
-            <!-- Visual Example 1 -->
-            <div class="column">
-              <div class="content">
-                <!-- <img src="" style="width: 100%; border-radius: 8px;"> -->
-                <p class="has-text-centered" style="margin-top: 10px;">
-                  <i></i>
-                </p>
+            <div class="column is-full-width">
+              <div id="ply-container"
+                style="width: 100%; height: 500px; background-color: #f5f5f5; border-radius: 8px; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; border: 1px solid #ddd;">
+                <div id="ply-loading"
+                  style="position: absolute; z-index: 10; font-weight: bold; color: #555; background: rgba(255,255,255,0.8); padding: 10px 20px; border-radius: 8px;">
+                  Loading 3D Scene (9.3MB)...
+                </div>
               </div>
-            </div>
-            
-            <!-- Visual Example 2 -->
-            <div class="column">
-              <div class="content">
-                <!-- <img src="" style="width: 100%; border-radius: 8px;"> -->
-                <p class="has-text-centered" style="margin-top: 10px;">
-                  <i></i>
-                </p>
-              </div>
+              <p class="has-text-centered" style="margin-top: 10px;">
+                <i>ScanNet Scene 0011_00 PLY Visualization via OpenPocket3D</i>
+              </p>
             </div>
           </div>
-          
+
+          <!-- Three.js PLY Viewer Logic -->
+          <script type="module">
+            import * as THREE from 'three';
+            import { PLYLoader } from 'three/addons/loaders/PLYLoader.js';
+
+            const container = document.getElementById('ply-container');
+            const scene = new THREE.Scene();
+            scene.background = new THREE.Color(0xf5f5f5);
+
+            const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 1000);
+            camera.position.set(0, 3, 6);
+
+            const renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setSize(container.clientWidth, container.clientHeight);
+            renderer.setPixelRatio(window.devicePixelRatio);
+            container.appendChild(renderer.domElement);
+
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+            scene.add(ambientLight);
+            const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
+            dirLight.position.set(10, 20, 10);
+            scene.add(dirLight);
+
+            let sceneGroup = new THREE.Group();
+            scene.add(sceneGroup);
+
+            let loadedConfigured = false;
+
+            const loader = new PLYLoader();
+            loader.load('static/resources/scene/scene0011_00_vh_clean_2.ply', function (geometry) {
+              geometry.computeVertexNormals();
+
+              const material = new THREE.MeshStandardMaterial({
+                vertexColors: geometry.hasAttribute('color'),
+                color: geometry.hasAttribute('color') ? 0xffffff : 0xcccccc,
+                flatShading: true,
+                side: THREE.DoubleSide
+              });
+
+              const mesh = new THREE.Mesh(geometry, material);
+
+              // Center mesh
+              geometry.computeBoundingBox();
+              const center = new THREE.Vector3();
+              geometry.boundingBox.getCenter(center);
+              mesh.position.sub(center);
+
+              // Add to group which handles the rotation
+              sceneGroup.add(mesh);
+
+              // ScanNet Z is UP, so rotate the group to make Y UP visually
+              sceneGroup.rotation.x = -Math.PI / 2;
+
+              // Adjust camera distance based on object size
+              const size = new THREE.Vector3();
+              geometry.boundingBox.getSize(size);
+              const maxDim = Math.max(size.x, size.y, size.z);
+
+              camera.position.set(0, maxDim * 0.8, maxDim * 1.5);
+              camera.lookAt(0, 0, 0);
+
+              // Hide loading text
+              const loadingText = document.getElementById('ply-loading');
+              if (loadingText) loadingText.style.display = 'none';
+
+              loadedConfigured = true;
+
+            }, undefined, function (error) {
+              console.error(error);
+              const loadingText = document.getElementById('ply-loading');
+              if (loadingText) loadingText.innerText = 'Failed to load 3D Scene.';
+            });
+
+            function animate() {
+              requestAnimationFrame(animate);
+              if (loadedConfigured) {
+                sceneGroup.rotation.z += 0.005; // Spin around its local Z axis
+              }
+              renderer.render(scene, camera);
+            }
+            animate();
+
+            // Handle window resize
+            window.addEventListener('resize', () => {
+              if (!container) return;
+              camera.aspect = container.clientWidth / container.clientHeight;
+              camera.updateProjectionMatrix();
+              renderer.setSize(container.clientWidth, container.clientHeight);
+            });
+          </script>
+
         </div>
       </div>
     </div>
