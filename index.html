@@ -246,6 +246,9 @@
               geometry.boundingBox.getSize(size);
               const maxDim = Math.max(size.x, size.y, size.z);
 
+              // Move the object itself a bit upwards in the viewport so it doesn't clip the bottom
+              sceneGroup.position.y += maxDim * 0.15;
+
               camera.position.set(0, maxDim * 0.5, maxDim * 0.85);
               camera.lookAt(0, 0, 0);
 
