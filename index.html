@@ -371,6 +371,40 @@
                   }
 
                   console.log(`Finished. Points painted: ${paintedPoints}`);
+
+                  // --- Darken unmasked points so colored segments pop ---
+                  const DIM = 0.12; // how dark background becomes (0=black, 1=original)
+                  // Build a flag array: 1 if painted, 0 if not
+                  const painted = new Uint8Array(n_points); // all 0 by default
+                  for (let i = 0; i < matches.length; i++) {
+                    const target_idx = matches[i].open3dis_eval_mask_index;
+                    const array_idx  = mask_indices.indexOf(target_idx);
+                    if (array_idx === -1) continue;
+                    const mask = mask_list[array_idx];
+                    if (mask.counts !== undefined) {
+                      const counts = mask.counts;
+                      for (let c = 0; c < counts.length; c += 2) {
+                        const start = counts[c], run = counts[c + 1];
+                        for (let r = 0; r < run; r++) {
+                          if (start + r < n_points) painted[start + r] = 1;
+                        }
+                      }
+                    } else if (mask.length === n_points) {
+                      for (let p = 0; p < n_points; p++) { if (mask[p]) painted[p] = 1; }
+                    } else {
+                      for (let p = 0; p < mask.length; p++) { painted[mask[p]] = 1; }
+                    }
+                  }
+                  // Apply dimming to unpainted points
+                  for (let p = 0; p < n_points; p++) {
+                    if (!painted[p]) {
+                      newColors[p * 3]     *= DIM;
+                      newColors[p * 3 + 1] *= DIM;
+                      newColors[p * 3 + 2] *= DIM;
+                    }
+                  }
+                  // --- end darkening ---
+
                   ovColors = newColors;
                   geometry.attributes.color.array.set(ovColors);
                   geometry.attributes.color.needsUpdate = true;
