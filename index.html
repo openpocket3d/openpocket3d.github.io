@@ -169,7 +169,7 @@
           <h2 class="title is-3">Interactive Demo</h2>
 
           <!-- Viewer + Instance panel side by side -->
-          <div style="display: flex; gap: 16px; align-items: flex-start;">
+          <div style="display: flex; gap: 14px; align-items: flex-start;">
 
             <!-- 3D Viewer -->
             <div style="flex: 1; min-width: 0;">
@@ -188,11 +188,12 @@
               </div>
             </div>
 
-            <!-- Instance panel (hidden until PLY loaded) -->
+            <!-- Instance panel: 3-col × 4-row grid, no scrollbar -->
             <div id="instance-panel"
-              style="width: 200px; flex-shrink: 0; height: 500px; overflow-y: auto; background: #fafafa; border: 1px solid #ddd; border-radius: 8px; padding: 12px; display: none;">
-              <p style="font-weight: 600; margin-bottom: 10px; font-size: 0.78rem; color: #888; text-transform: uppercase; letter-spacing: 0.5px;">Instances</p>
-              <div id="instance-btn-list" style="display: flex; flex-direction: column; gap: 5px;"></div>
+              style="display: none; flex-shrink: 0; width: 310px;">
+              <div id="instance-btn-list"
+                style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px;">
+              </div>
             </div>
 
           </div>
@@ -403,15 +404,20 @@
               const instBtnList = document.getElementById('instance-btn-list');
               if (instPanel) instPanel.style.display = 'block';
 
+              // Only build buttons for these 12 instances
+              const KEEP_INS_IDX = new Set([3, 60, 127, 49, 84, 77, 42, 113, 143, 160, 210, 211]);
+
               // Build class-counter map for labels like "chair #1", "chair #2"
               const classCounter = {};
               matches.forEach((match) => {
+                if (!KEEP_INS_IDX.has(match.open3dis_final_ins_index)) return;
                 const label = (match.oe && match.oe.openpocket3d_result_label) || 'unknown';
                 classCounter[label] = (classCounter[label] || 0) + 1;
               });
               const classSeen = {};
 
               matches.forEach((match, i) => {
+                if (!KEEP_INS_IDX.has(match.open3dis_final_ins_index)) return;
                 const color = maskPalette[match.open3dis_eval_mask_index];
                 const hex   = '#' + color.getHexString();
                 const baseLabel = (match.oe && match.oe.openpocket3d_result_label) || `inst_${i}`;
