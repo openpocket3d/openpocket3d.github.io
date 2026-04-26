@@ -186,6 +186,9 @@
             </div>
           </div>
 
+          <!-- Inline mask data (no fetch/CORS needed) -->
+          <script src="static/resources/data/scene_mask_data.js"></script>
+
           <!-- Three.js PLY Viewer Logic -->
           <script type="module">
             import * as THREE from 'three';
@@ -218,14 +221,15 @@
             loader.load('static/resources/scene/scene0011_00_vh_clean_2.ply', function (geometry) {
               geometry.computeVertexNormals();
 
-              const material = new THREE.MeshStandardMaterial({
+              const material = new THREE.PointsMaterial({
+                size: 0.04,
                 vertexColors: geometry.hasAttribute('color'),
                 color: geometry.hasAttribute('color') ? 0xffffff : 0xcccccc,
-                flatShading: true,
-                side: THREE.DoubleSide
+                
+                
               });
 
-              const mesh = new THREE.Mesh(geometry, material);
+              const mesh = new THREE.Points(geometry, material);
 
               // Center mesh
               geometry.computeBoundingBox();
@@ -294,49 +298,62 @@
                 }
 
                 try {
-                  console.log("Fetching JSON files...");
-                  const [indexRes, arrayRes] = await Promise.all([
-                    fetch('static/resources/data/scene0011_00_index.json'),
-                    fetch('static/resources/data/scene0011_00_ins_arrays.json')
-                  ]);
-                  const indexData = await indexRes.json();
-                  const insData = await arrayRes.json();
+                  // Use pre-loaded global variables (no fetch needed, works with file://)
+                  const indexData = window.SCENE_INDEX_DATA;
+                  const insData   = window.SCENE_INS_DATA;
 
-                  console.log("Loaded JSON data successfully.");
+                  if (!indexData || !insData) {
+                    throw new Error('Mask data not loaded. Make sure scene_mask_data.js is included.');
+                  }
+
+                  console.log("Using inline mask data.");
                   const newColors = new Float32Array(originalColors);
                   const maskPalette = {};
                   const matches = indexData.matches;
-                  const mask_list = insData.ins_merged_eval || insData.ins_final_ov; // fallback just in case
+                  const mask_list = insData.ins_merged_eval || insData.ins_final_ov;
                   const mask_indices = insData.open3dis_eval_mask_index;
                   const n_points = insData.n_points;
 
                   console.log(`Processing ${matches.length} target masks out of total points: ${n_points}`);
                   let paintedPoints = 0;
 
-                  // 33 masks -> generate distinct colors
                   for (let i = 0; i < matches.length; i++) {
                     const match = matches[i];
                     const target_idx = match.open3dis_eval_mask_index;
                     const array_idx = mask_indices.indexOf(target_idx);
-                    
+
                     if (array_idx === -1) {
                       console.warn(`Target index ${target_idx} not found in array!`);
                       continue;
                     }
 
-                    // Generate distinct HSL color
                     if (!maskPalette[target_idx]) {
-                      const hue = (i * 137.508) % 360; 
+                      const hue = (i * 137.508) % 360;
                       maskPalette[target_idx] = new THREE.Color(`hsl(${Math.round(hue)}, 90%, 55%)`);
                     }
                     const color = maskPalette[target_idx];
                     const mask = mask_list[array_idx];
 
-                    // Safely handle both boolean mask arrays and point index arrays
-                    if (mask.length === n_points) {
+                    // RLE dict format: { length: N, counts: [start, run, start, run, ...] }
+                    if (mask.counts !== undefined) {
+                      const counts = mask.counts;
+                      for (let c = 0; c < counts.length; c += 2) {
+                        const startIdx = counts[c];
+                        const runLen = counts[c + 1];
+                        for (let r = 0; r < runLen; r++) {
+                          const ptIdx = startIdx + r;
+                          if (ptIdx * 3 + 2 < newColors.length) {
+                            newColors[ptIdx * 3]     = color.r;
+                            newColors[ptIdx * 3 + 1] = color.g;
+                            newColors[ptIdx * 3 + 2] = color.b;
+                            paintedPoints++;
+                          }
+                        }
+                      }
+                    } else if (mask.length === n_points) {
                       for (let p = 0; p < mask.length; p++) {
                         if (mask[p]) {
-                          newColors[p * 3] = color.r;
+                          newColors[p * 3]     = color.r;
                           newColors[p * 3 + 1] = color.g;
                           newColors[p * 3 + 2] = color.b;
                           paintedPoints++;
@@ -345,21 +362,21 @@
                     } else {
                       for (let p = 0; p < mask.length; p++) {
                         const ptIdx = mask[p];
-                        newColors[ptIdx * 3] = color.r;
+                        newColors[ptIdx * 3]     = color.r;
                         newColors[ptIdx * 3 + 1] = color.g;
                         newColors[ptIdx * 3 + 2] = color.b;
                         paintedPoints++;
                       }
                     }
                   }
-                  
-                  console.log(`Finished processing. Total points painted across all labels: ${paintedPoints}`);
+
+                  console.log(`Finished. Points painted: ${paintedPoints}`);
                   ovColors = newColors;
                   geometry.attributes.color.array.set(ovColors);
                   geometry.attributes.color.needsUpdate = true;
                 } catch (e) {
                   console.error("Mask loading failed", e);
-                  alert("마스크 데이터를 로드하는 중 오류가 발생했습니다. (자세한 내용은 콘솔 F12 확인)");
+                  alert("마스크 데이터 로드 실패. F12 콘솔 확인");
                 } finally {
                   if (loadingText) loadingText.style.display = 'none';
                 }
