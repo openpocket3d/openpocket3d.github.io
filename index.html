@@ -233,6 +233,24 @@
             let sceneGroup = new THREE.Group();
             scene.add(sceneGroup);
 
+            // ---- Mini viewer setup ----
+            const miniContainer = document.getElementById('mini-container');
+            const miniScene    = miniContainer ? new THREE.Scene() : null;
+            let   miniGroup    = new THREE.Group();
+            let   miniCamera   = null;
+            let   miniRenderer = null;
+            let   miniLoaded   = false;
+
+            if (miniScene && miniContainer) {
+              miniScene.background = new THREE.Color(0xf0f0f0);
+              miniScene.add(miniGroup);
+              miniCamera = new THREE.PerspectiveCamera(45, 1, 0.01, 500);
+              miniCamera.position.set(0, 2, 3);
+              miniRenderer = new THREE.WebGLRenderer({ antialias: true });
+              miniRenderer.setPixelRatio(window.devicePixelRatio);
+              miniContainer.appendChild(miniRenderer.domElement);
+            }
+
             let loadedConfigured = false;
             let isRotating = true;
             let normalCamY = 3, normalCamZ = 6; // updated after PLY loads
@@ -394,6 +412,8 @@
                 restoreCamera();
                 geometry.attributes.color.array.set(originalColors);
                 geometry.attributes.color.needsUpdate = true;
+                miniLoaded = false;
+                while (miniGroup.children.length) miniGroup.remove(miniGroup.children[0]);
               });
 
               document.getElementById('btn-ov').addEventListener('click', () => {
@@ -403,6 +423,8 @@
                 if (!ovColors) ovColors = computeOvColors();
                 geometry.attributes.color.array.set(ovColors);
                 geometry.attributes.color.needsUpdate = true;
+                miniLoaded = false;
+                while (miniGroup.children.length) miniGroup.remove(miniGroup.children[0]);
               });
 
               // ---- Build instance buttons ----
@@ -601,25 +623,6 @@
               const lt = document.getElementById('ply-loading');
               if (lt) lt.innerText = 'Failed to load 3D Scene.';
             });
-
-            // ---- Mini viewer setup (runs once, outside PLY callback) ----
-            const miniContainer = document.getElementById('mini-container');
-            const miniScene    = miniContainer ? new THREE.Scene() : null;
-            let   miniGroup    = new THREE.Group();
-            let   miniCamera   = null;
-            let   miniRenderer = null;
-            let   miniLoaded   = false;
-
-            if (miniScene && miniContainer) {
-              miniScene.background = new THREE.Color(0xf0f0f0);
-              miniScene.add(miniGroup);
-              miniCamera = new THREE.PerspectiveCamera(45, 1, 0.01, 500);
-              miniCamera.position.set(0, 2, 3);
-              miniRenderer = new THREE.WebGLRenderer({ antialias: true });
-              miniRenderer.setPixelRatio(window.devicePixelRatio);
-              // Size will be set in first animate frame when container has dimensions
-              miniContainer.appendChild(miniRenderer.domElement);
-            }
 
             function animate() {
               requestAnimationFrame(animate);
