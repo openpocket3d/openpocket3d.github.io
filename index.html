@@ -168,15 +168,18 @@
         <div class="column is-full-width">
           <h2 class="title is-3">Interactive Demo</h2>
 
-          <div class="columns is-centered">
-            <div class="column is-full-width">
+          <!-- Viewer + Instance panel side by side -->
+          <div style="display: flex; gap: 16px; align-items: flex-start;">
+
+            <!-- 3D Viewer -->
+            <div style="flex: 1; min-width: 0;">
               <div id="ply-container"
                 style="width: 100%; height: 500px; background-color: #f5f5f5; border-radius: 8px; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; border: 1px solid #ddd;">
-                
-                <!-- Overlay Buttons (Right-aligned, Horizontal) -->
+                <!-- Overlay Buttons -->
                 <div style="position: absolute; top: 15px; right: 15px; z-index: 20; display: flex; gap: 10px;">
                   <button id="btn-rgb" class="button is-dark is-rounded">RGB</button>
-                  <button id="btn-ov" class="button is-white is-rounded" style="border: 1px solid #363636; color: #363636;">OV backbone</button>
+                  <button id="btn-ov" class="button is-white is-rounded"
+                    style="border: 1px solid #363636; color: #363636;">OV backbone</button>
                 </div>
                 <div id="ply-loading"
                   style="position: absolute; z-index: 10; font-weight: bold; color: #555; background: rgba(255,255,255,0.8); padding: 10px 20px; border-radius: 8px;">
@@ -184,6 +187,14 @@
                 </div>
               </div>
             </div>
+
+            <!-- Instance panel (hidden until PLY loaded) -->
+            <div id="instance-panel"
+              style="width: 200px; flex-shrink: 0; height: 500px; overflow-y: auto; background: #fafafa; border: 1px solid #ddd; border-radius: 8px; padding: 12px; display: none;">
+              <p style="font-weight: 600; margin-bottom: 10px; font-size: 0.78rem; color: #888; text-transform: uppercase; letter-spacing: 0.5px;">Instances</p>
+              <div id="instance-btn-list" style="display: flex; flex-direction: column; gap: 5px;"></div>
+            </div>
+
           </div>
 
           <!-- Inline mask data (no fetch/CORS needed) -->
@@ -216,6 +227,8 @@
             scene.add(sceneGroup);
 
             let loadedConfigured = false;
+            let isRotating = true;
+            let normalCamY = 3, normalCamZ = 6; // updated after PLY loads
 
             const loader = new PLYLoader();
             loader.load('static/resources/scene/scene0011_00_vh_clean_2.ply', function (geometry) {
@@ -225,213 +238,244 @@
                 size: 0.04,
                 vertexColors: geometry.hasAttribute('color'),
                 color: geometry.hasAttribute('color') ? 0xffffff : 0xcccccc,
-                
-                
               });
 
               const mesh = new THREE.Points(geometry, material);
 
-              // Center mesh
               geometry.computeBoundingBox();
               const center = new THREE.Vector3();
               geometry.boundingBox.getCenter(center);
               mesh.position.sub(center);
-
-              // Add to group which handles the rotation
               sceneGroup.add(mesh);
-
-              // ScanNet Z is UP, so rotate the group to make Y UP visually
               sceneGroup.rotation.x = -Math.PI / 2;
 
-              // Adjust camera distance based on object size
               const size = new THREE.Vector3();
               geometry.boundingBox.getSize(size);
               const maxDim = Math.max(size.x, size.y, size.z);
-
-              // Move the object itself a bit upwards in the viewport so it doesn't clip the bottom
               sceneGroup.position.y += maxDim * 0.15;
 
-              camera.position.set(0, maxDim * 0.5, maxDim * 0.85);
+              normalCamY = maxDim * 0.5;
+              normalCamZ = maxDim * 0.85;
+              camera.position.set(0, normalCamY, normalCamZ);
               camera.lookAt(0, 0, 0);
 
-              // Hide loading text
               const loadingText = document.getElementById('ply-loading');
               if (loadingText) loadingText.style.display = 'none';
-
               loadedConfigured = true;
 
-              // Setup Buttons
+              // ---- Color data ----
               const originalColors = new Float32Array(geometry.attributes.color.array);
-              let ovColors = null; // Cache for the OV mask colors
+              let ovColors = null;
 
-              const btnRgb = document.getElementById('btn-rgb');
-              const btnOv = document.getElementById('btn-ov');
+              const indexData  = window.SCENE_INDEX_DATA;
+              const insData    = window.SCENE_INS_DATA;
+              const matches    = indexData.matches;
+              const mask_list  = insData.ins_merged_eval || insData.ins_final_ov;
+              const mask_indices = insData.open3dis_eval_mask_index;
+              const n_points   = insData.n_points;
 
-              btnRgb.addEventListener('click', () => {
-                geometry.attributes.color.array.set(originalColors);
-                geometry.attributes.color.needsUpdate = true;
-                btnRgb.className = "button is-dark is-rounded";
-                btnRgb.style.border = "none";
-                btnRgb.style.color = "";
-                btnOv.className = "button is-white is-rounded";
-                btnOv.style.border = "1px solid #363636";
-                btnOv.style.color = "#363636";
+              // Pre-compute palette (same hue formula everywhere)
+              const maskPalette = {};
+              matches.forEach((match, i) => {
+                const hue = (i * 137.508) % 360;
+                maskPalette[match.open3dis_eval_mask_index] =
+                  new THREE.Color(`hsl(${Math.round(hue)}, 90%, 55%)`);
               });
 
-              btnOv.addEventListener('click', async () => {
-                btnOv.className = "button is-dark is-rounded";
-                btnOv.style.border = "none";
-                btnOv.style.color = "";
-                btnRgb.className = "button is-white is-rounded";
-                btnRgb.style.border = "1px solid #363636";
-                btnRgb.style.color = "#363636";
-
-                if (ovColors) {
-                  geometry.attributes.color.array.set(ovColors);
-                  geometry.attributes.color.needsUpdate = true;
-                  return;
+              // ---- Shared helpers ----
+              function paintMask(colors, mask, color) {
+                if (mask.counts !== undefined) {
+                  const c = mask.counts;
+                  for (let i = 0; i < c.length; i += 2) {
+                    const end = c[i] + c[i + 1];
+                    for (let p = c[i]; p < end; p++) {
+                      if (p * 3 + 2 < colors.length) {
+                        colors[p * 3] = color.r; colors[p * 3 + 1] = color.g; colors[p * 3 + 2] = color.b;
+                      }
+                    }
+                  }
+                } else if (mask.length === n_points) {
+                  for (let p = 0; p < n_points; p++)
+                    if (mask[p]) { colors[p * 3] = color.r; colors[p * 3 + 1] = color.g; colors[p * 3 + 2] = color.b; }
+                } else {
+                  for (let p = 0; p < mask.length; p++) {
+                    const i = mask[p]; colors[i * 3] = color.r; colors[i * 3 + 1] = color.g; colors[i * 3 + 2] = color.b;
+                  }
                 }
+              }
 
-                if (loadingText) {
-                  loadingText.innerText = 'Calculating Masks... (Takes a moment)';
-                  loadingText.style.display = 'block';
+              function buildPainted(mask) {
+                const painted = new Uint8Array(n_points);
+                if (mask.counts !== undefined) {
+                  const c = mask.counts;
+                  for (let i = 0; i < c.length; i += 2) {
+                    const end = c[i] + c[i + 1];
+                    for (let p = c[i]; p < end; p++) if (p < n_points) painted[p] = 1;
+                  }
+                } else if (mask.length === n_points) {
+                  for (let p = 0; p < n_points; p++) if (mask[p]) painted[p] = 1;
+                } else {
+                  for (let p = 0; p < mask.length; p++) painted[mask[p]] = 1;
                 }
+                return painted;
+              }
 
-                try {
-                  // Use pre-loaded global variables (no fetch needed, works with file://)
-                  const indexData = window.SCENE_INDEX_DATA;
-                  const insData   = window.SCENE_INS_DATA;
-
-                  if (!indexData || !insData) {
-                    throw new Error('Mask data not loaded. Make sure scene_mask_data.js is included.');
+              function applyFade(colors, painted, fade) {
+                for (let p = 0; p < n_points; p++) {
+                  if (!painted[p]) {
+                    colors[p * 3]     += (1 - colors[p * 3])     * fade;
+                    colors[p * 3 + 1] += (1 - colors[p * 3 + 1]) * fade;
+                    colors[p * 3 + 2] += (1 - colors[p * 3 + 2]) * fade;
                   }
-
-                  console.log("Using inline mask data.");
-                  const newColors = new Float32Array(originalColors);
-                  const maskPalette = {};
-                  const matches = indexData.matches;
-                  const mask_list = insData.ins_merged_eval || insData.ins_final_ov;
-                  const mask_indices = insData.open3dis_eval_mask_index;
-                  const n_points = insData.n_points;
-
-                  console.log(`Processing ${matches.length} target masks out of total points: ${n_points}`);
-                  let paintedPoints = 0;
-
-                  for (let i = 0; i < matches.length; i++) {
-                    const match = matches[i];
-                    const target_idx = match.open3dis_eval_mask_index;
-                    const array_idx = mask_indices.indexOf(target_idx);
-
-                    if (array_idx === -1) {
-                      console.warn(`Target index ${target_idx} not found in array!`);
-                      continue;
-                    }
-
-                    if (!maskPalette[target_idx]) {
-                      const hue = (i * 137.508) % 360;
-                      maskPalette[target_idx] = new THREE.Color(`hsl(${Math.round(hue)}, 90%, 55%)`);
-                    }
-                    const color = maskPalette[target_idx];
-                    const mask = mask_list[array_idx];
-
-                    // RLE dict format: { length: N, counts: [start, run, start, run, ...] }
-                    if (mask.counts !== undefined) {
-                      const counts = mask.counts;
-                      for (let c = 0; c < counts.length; c += 2) {
-                        const startIdx = counts[c];
-                        const runLen = counts[c + 1];
-                        for (let r = 0; r < runLen; r++) {
-                          const ptIdx = startIdx + r;
-                          if (ptIdx * 3 + 2 < newColors.length) {
-                            newColors[ptIdx * 3]     = color.r;
-                            newColors[ptIdx * 3 + 1] = color.g;
-                            newColors[ptIdx * 3 + 2] = color.b;
-                            paintedPoints++;
-                          }
-                        }
-                      }
-                    } else if (mask.length === n_points) {
-                      for (let p = 0; p < mask.length; p++) {
-                        if (mask[p]) {
-                          newColors[p * 3]     = color.r;
-                          newColors[p * 3 + 1] = color.g;
-                          newColors[p * 3 + 2] = color.b;
-                          paintedPoints++;
-                        }
-                      }
-                    } else {
-                      for (let p = 0; p < mask.length; p++) {
-                        const ptIdx = mask[p];
-                        newColors[ptIdx * 3]     = color.r;
-                        newColors[ptIdx * 3 + 1] = color.g;
-                        newColors[ptIdx * 3 + 2] = color.b;
-                        paintedPoints++;
-                      }
-                    }
-                  }
-
-                  console.log(`Finished. Points painted: ${paintedPoints}`);
-
-                  // --- Fade unmasked points toward white so colored segments pop ---
-                  const FADE = 0.5; // 0 = original RGB, 1 = pure white
-                  // Build a flag array: 1 if painted by a mask
-                  const painted = new Uint8Array(n_points);
-                  for (let i = 0; i < matches.length; i++) {
-                    const target_idx = matches[i].open3dis_eval_mask_index;
-                    const array_idx  = mask_indices.indexOf(target_idx);
-                    if (array_idx === -1) continue;
-                    const mask = mask_list[array_idx];
-                    if (mask.counts !== undefined) {
-                      const counts = mask.counts;
-                      for (let c = 0; c < counts.length; c += 2) {
-                        const start = counts[c], run = counts[c + 1];
-                        for (let r = 0; r < run; r++) {
-                          if (start + r < n_points) painted[start + r] = 1;
-                        }
-                      }
-                    } else if (mask.length === n_points) {
-                      for (let p = 0; p < n_points; p++) { if (mask[p]) painted[p] = 1; }
-                    } else {
-                      for (let p = 0; p < mask.length; p++) { painted[mask[p]] = 1; }
-                    }
-                  }
-                  // Lerp unmasked points toward white (1, 1, 1)
-                  for (let p = 0; p < n_points; p++) {
-                    if (!painted[p]) {
-                      newColors[p * 3]     = newColors[p * 3]     + (1 - newColors[p * 3])     * FADE;
-                      newColors[p * 3 + 1] = newColors[p * 3 + 1] + (1 - newColors[p * 3 + 1]) * FADE;
-                      newColors[p * 3 + 2] = newColors[p * 3 + 2] + (1 - newColors[p * 3 + 2]) * FADE;
-                    }
-                  }
-                  // --- end fade ---
-
-                  ovColors = newColors;
-                  geometry.attributes.color.array.set(ovColors);
-                  geometry.attributes.color.needsUpdate = true;
-                } catch (e) {
-                  console.error("Mask loading failed", e);
-                  alert("마스크 데이터 로드 실패. F12 콘솔 확인");
-                } finally {
-                  if (loadingText) loadingText.style.display = 'none';
                 }
+              }
+
+              function computeOvColors() {
+                const c = new Float32Array(originalColors);
+                const allPainted = new Uint8Array(n_points);
+                matches.forEach((match, i) => {
+                  const ai = mask_indices.indexOf(match.open3dis_eval_mask_index);
+                  if (ai === -1) return;
+                  const mask = mask_list[ai];
+                  paintMask(c, mask, maskPalette[match.open3dis_eval_mask_index]);
+                  const p = buildPainted(mask);
+                  for (let j = 0; j < n_points; j++) if (p[j]) allPainted[j] = 1;
+                });
+                applyFade(c, allPainted, 0.3);
+                return c;
+              }
+
+              const instanceCache = {};
+              function computeInstanceColors(matchIdx) {
+                if (instanceCache[matchIdx]) return instanceCache[matchIdx];
+                const match = matches[matchIdx];
+                const ai = mask_indices.indexOf(match.open3dis_eval_mask_index);
+                if (ai === -1) return null;
+                const mask = mask_list[ai];
+                const c = new Float32Array(originalColors);
+                paintMask(c, mask, maskPalette[match.open3dis_eval_mask_index]);
+                applyFade(c, buildPainted(mask), 0.75);
+                instanceCache[matchIdx] = c;
+                return c;
+              }
+
+              // ---- Top button helpers ----
+              function setTopActive(activeId) {
+                ['btn-rgb', 'btn-ov'].forEach(id => {
+                  const b = document.getElementById(id);
+                  if (id === activeId) {
+                    b.className = 'button is-dark is-rounded'; b.style.border = 'none'; b.style.color = '';
+                  } else {
+                    b.className = 'button is-white is-rounded';
+                    b.style.border = '1px solid #363636'; b.style.color = '#363636';
+                  }
+                });
+                document.querySelectorAll('.inst-btn').forEach(b => {
+                  b.style.fontWeight = '400'; b.style.background = '#fff'; b.style.outline = 'none';
+                });
+              }
+
+              function restoreCamera() {
+                camera.position.set(0, normalCamY, normalCamZ);
+                camera.lookAt(0, 0, 0);
+              }
+
+              // ---- Top button events ----
+              document.getElementById('btn-rgb').addEventListener('click', () => {
+                setTopActive('btn-rgb');
+                isRotating = true;
+                restoreCamera();
+                geometry.attributes.color.array.set(originalColors);
+                geometry.attributes.color.needsUpdate = true;
+              });
+
+              document.getElementById('btn-ov').addEventListener('click', () => {
+                setTopActive('btn-ov');
+                isRotating = true;
+                restoreCamera();
+                if (!ovColors) ovColors = computeOvColors();
+                geometry.attributes.color.array.set(ovColors);
+                geometry.attributes.color.needsUpdate = true;
+              });
+
+              // ---- Build instance buttons ----
+              const instPanel   = document.getElementById('instance-panel');
+              const instBtnList = document.getElementById('instance-btn-list');
+              if (instPanel) instPanel.style.display = 'block';
+
+              matches.forEach((match, i) => {
+                const color = maskPalette[match.open3dis_eval_mask_index];
+                const hex   = '#' + color.getHexString();
+                const label = (match.ov && match.ov.open3dis_original_result_label) || `inst_${i}`;
+                const oeLabel = (match.oe && match.oe.openpocket3d_result_label) || '';
+
+                const btn = document.createElement('button');
+                btn.className = 'inst-btn';
+                btn.title = oeLabel ? `OE: ${oeLabel}` : '';
+                btn.style.cssText = [
+                  'width:100%', 'text-align:left', 'padding:6px 10px',
+                  'border-radius:6px', 'cursor:pointer', 'font-size:0.8rem',
+                  'background:#fff', `border-left:4px solid ${hex}`, 'border-top:none',
+                  'border-right:none', 'border-bottom:none',
+                  'box-shadow:0 1px 3px rgba(0,0,0,0.08)',
+                  'display:flex', 'align-items:center', 'gap:6px',
+                  'transition:background 0.12s',
+                ].join(';');
+
+                const dot = document.createElement('span');
+                dot.style.cssText = `display:inline-block;width:9px;height:9px;border-radius:50%;background:${hex};flex-shrink:0;`;
+                const txt = document.createElement('span');
+                txt.textContent = label;
+                btn.appendChild(dot); btn.appendChild(txt);
+
+                btn.addEventListener('mouseenter', () => { if (btn.style.fontWeight !== '700') btn.style.background = '#f0f0f0'; });
+                btn.addEventListener('mouseleave', () => { if (btn.style.fontWeight !== '700') btn.style.background = '#fff'; });
+
+                btn.addEventListener('click', () => {
+                  // Highlight this button, clear others
+                  document.querySelectorAll('.inst-btn').forEach(b => {
+                    b.style.fontWeight = '400'; b.style.background = '#fff'; b.style.outline = 'none';
+                  });
+                  btn.style.fontWeight = '700';
+                  btn.style.outline    = `2px solid ${hex}`;
+
+                  // Deactivate top buttons visually
+                  ['btn-rgb', 'btn-ov'].forEach(id => {
+                    const b = document.getElementById(id);
+                    b.className = 'button is-white is-rounded';
+                    b.style.border = '1px solid #363636'; b.style.color = '#363636';
+                  });
+
+                  // Stop rotation, snap to fixed zoomed-in view
+                  isRotating = false;
+                  sceneGroup.rotation.z = 0;
+                  camera.position.set(0, normalCamY * 0.5, normalCamZ * 0.5);
+                  camera.lookAt(0, 0, 0);
+
+                  // Color only this instance
+                  const c = computeInstanceColors(i);
+                  if (c) {
+                    geometry.attributes.color.array.set(c);
+                    geometry.attributes.color.needsUpdate = true;
+                  }
+                });
+
+                instBtnList.appendChild(btn);
               });
 
             }, undefined, function (error) {
               console.error(error);
-              const loadingText = document.getElementById('ply-loading');
-              if (loadingText) loadingText.innerText = 'Failed to load 3D Scene.';
+              const lt = document.getElementById('ply-loading');
+              if (lt) lt.innerText = 'Failed to load 3D Scene.';
             });
 
             function animate() {
               requestAnimationFrame(animate);
-              if (loadedConfigured) {
-                sceneGroup.rotation.z -= 0.005; // Spin clockwise around its local Z axis
-              }
+              if (loadedConfigured && isRotating) sceneGroup.rotation.z -= 0.005;
               renderer.render(scene, camera);
             }
             animate();
 
-            // Handle window resize
             window.addEventListener('resize', () => {
               if (!container) return;
               camera.aspect = container.clientWidth / container.clientHeight;
