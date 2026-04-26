@@ -354,7 +354,7 @@
                 const mask = mask_list[ai];
                 const c = new Float32Array(originalColors);
                 paintMask(c, mask, maskPalette[match.open3dis_eval_mask_index]);
-                applyFade(c, buildPainted(mask), 0.75);
+                applyFade(c, buildPainted(mask), 0.3); // same fade as OV backbone
                 instanceCache[matchIdx] = c;
                 return c;
               }
@@ -403,10 +403,21 @@
               const instBtnList = document.getElementById('instance-btn-list');
               if (instPanel) instPanel.style.display = 'block';
 
+              // Build class-counter map for labels like "chair #1", "chair #2"
+              const classCounter = {};
+              matches.forEach((match) => {
+                const label = (match.ov && match.ov.open3dis_original_result_label) || 'unknown';
+                classCounter[label] = (classCounter[label] || 0) + 1;
+              });
+              const classSeen = {};
+
               matches.forEach((match, i) => {
                 const color = maskPalette[match.open3dis_eval_mask_index];
                 const hex   = '#' + color.getHexString();
-                const label = (match.ov && match.ov.open3dis_original_result_label) || `inst_${i}`;
+                const baseLabel = (match.ov && match.ov.open3dis_original_result_label) || `inst_${i}`;
+                classSeen[baseLabel] = (classSeen[baseLabel] || 0) + 1;
+                const label = classCounter[baseLabel] > 1
+                  ? `${baseLabel} #${classSeen[baseLabel]}` : baseLabel;
                 const oeLabel = (match.oe && match.oe.openpocket3d_result_label) || '';
 
                 const btn = document.createElement('button');
@@ -446,10 +457,10 @@
                     b.style.border = '1px solid #363636'; b.style.color = '#363636';
                   });
 
-                  // Stop rotation, snap to fixed zoomed-in view
+                  // Stop rotation, snap to fixed view (90° CW, no zoom)
                   isRotating = false;
-                  sceneGroup.rotation.z = 0;
-                  camera.position.set(0, normalCamY * 0.5, normalCamZ * 0.5);
+                  sceneGroup.rotation.z = -Math.PI / 2; // 90° clockwise
+                  camera.position.set(0, normalCamY, normalCamZ); // normal distance
                   camera.lookAt(0, 0, 0);
 
                   // Color only this instance
