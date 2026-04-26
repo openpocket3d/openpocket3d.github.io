@@ -188,11 +188,17 @@
               </div>
             </div>
 
-            <!-- Instance panel: 3-col × 4-row grid, no scrollbar -->
+            <!-- Instance panel: 3-col × 4-row grid + mini preview below -->
             <div id="instance-panel"
-              style="display: none; flex-shrink: 0; width: 310px;">
+              style="display: none; flex-shrink: 0; width: 310px; height: 500px;
+                     background: #fafafa; border: 1px solid #ddd; border-radius: 8px;
+                     padding: 12px; box-sizing: border-box; flex-direction: column; gap: 8px;">
               <div id="instance-btn-list"
-                style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px;">
+                style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px; flex-shrink: 0;">
+              </div>
+              <!-- Mini point-cloud preview -->
+              <div id="mini-container"
+                style="flex: 1; border-radius: 6px; overflow: hidden; background: #f0f0f0; min-height: 0;">
               </div>
             </div>
 
@@ -402,83 +408,113 @@
               // ---- Build instance buttons ----
               const instPanel   = document.getElementById('instance-panel');
               const instBtnList = document.getElementById('instance-btn-list');
-              if (instPanel) instPanel.style.display = 'block';
+              if (instPanel) instPanel.style.display = 'flex';
 
               // Only build buttons for these 12 instances
               const KEEP_INS_IDX = new Set([3, 60, 127, 49, 84, 77, 42, 113, 143, 160, 210, 211]);
 
-              // Build class-counter map for labels like "chair #1", "chair #2"
-              const classCounter = {};
-              matches.forEach((match) => {
-                if (!KEEP_INS_IDX.has(match.open3dis_final_ins_index)) return;
-                const label = (match.oe && match.oe.openpocket3d_result_label) || 'unknown';
-                classCounter[label] = (classCounter[label] || 0) + 1;
-              });
-              const classSeen = {};
-
+              // Only object name on the button (no numbering, no index)
               matches.forEach((match, i) => {
                 if (!KEEP_INS_IDX.has(match.open3dis_final_ins_index)) return;
                 const color = maskPalette[match.open3dis_eval_mask_index];
                 const hex   = '#' + color.getHexString();
-                const baseLabel = (match.oe && match.oe.openpocket3d_result_label) || `inst_${i}`;
-                classSeen[baseLabel] = (classSeen[baseLabel] || 0) + 1;
-                const label = classCounter[baseLabel] > 1
-                  ? `${baseLabel} #${classSeen[baseLabel]}` : baseLabel;
-                const finalInsIdx = match.open3dis_final_ins_index;
-                const oeLabel = (match.oe && match.oe.openpocket3d_result_label) || '';
+                const label = (match.oe && match.oe.openpocket3d_result_label) || `inst_${i}`;
 
                 const btn = document.createElement('button');
                 btn.className = 'inst-btn';
-                btn.title = `ins_idx: ${finalInsIdx}`;
+                btn.title = `final_ins_index: ${match.open3dis_final_ins_index}`;
                 btn.style.cssText = [
-                  'width:100%', 'text-align:left', 'padding:6px 10px',
-                  'border-radius:6px', 'cursor:pointer', 'font-size:0.8rem',
+                  'width:100%', 'text-align:center', 'padding:7px 4px',
+                  'border-radius:6px', 'cursor:pointer', 'font-size:0.78rem',
                   'background:#fff', `border-left:4px solid ${hex}`, 'border-top:none',
                   'border-right:none', 'border-bottom:none',
                   'box-shadow:0 1px 3px rgba(0,0,0,0.08)',
-                  'display:flex', 'align-items:center', 'gap:6px',
-                  'transition:background 0.12s',
+                  'display:flex', 'align-items:center', 'justify-content:center', 'gap:5px',
+                  'transition:background 0.12s', 'font-weight:400',
                 ].join(';');
 
                 const dot = document.createElement('span');
-                dot.style.cssText = `display:inline-block;width:9px;height:9px;border-radius:50%;background:${hex};flex-shrink:0;`;
+                dot.style.cssText = `display:inline-block;width:8px;height:8px;border-radius:50%;background:${hex};flex-shrink:0;`;
                 const txt = document.createElement('span');
-                txt.style.cssText = 'flex:1; overflow:hidden; white-space:nowrap; text-overflow:ellipsis;';
                 txt.textContent = label;
-                const idx = document.createElement('span');
-                idx.style.cssText = 'font-size:0.7rem;color:#aaa;flex-shrink:0;';
-                idx.textContent = `#${finalInsIdx}`;
-                btn.appendChild(dot); btn.appendChild(txt); btn.appendChild(idx);
+                btn.appendChild(dot);
+                btn.appendChild(txt);
 
                 btn.addEventListener('mouseenter', () => { if (btn.style.fontWeight !== '700') btn.style.background = '#f0f0f0'; });
                 btn.addEventListener('mouseleave', () => { if (btn.style.fontWeight !== '700') btn.style.background = '#fff'; });
 
                 btn.addEventListener('click', () => {
-                  // Highlight this button, clear others
                   document.querySelectorAll('.inst-btn').forEach(b => {
                     b.style.fontWeight = '400'; b.style.background = '#fff'; b.style.outline = 'none';
                   });
                   btn.style.fontWeight = '700';
                   btn.style.outline    = `2px solid ${hex}`;
 
-                  // Deactivate top buttons visually
                   ['btn-rgb', 'btn-ov'].forEach(id => {
                     const b = document.getElementById(id);
                     b.className = 'button is-white is-rounded';
                     b.style.border = '1px solid #363636'; b.style.color = '#363636';
                   });
 
-                  // Stop rotation, snap to fixed view (90° CW, no zoom)
                   isRotating = false;
-                  sceneGroup.rotation.z = -Math.PI / 2; // 90° clockwise
-                  camera.position.set(0, normalCamY, normalCamZ); // normal distance
+                  sceneGroup.rotation.z = -Math.PI / 2;
+                  camera.position.set(0, normalCamY, normalCamZ);
                   camera.lookAt(0, 0, 0);
 
-                  // Color only this instance
                   const c = computeInstanceColors(i);
                   if (c) {
                     geometry.attributes.color.array.set(c);
                     geometry.attributes.color.needsUpdate = true;
+                  }
+
+                  // ---- Update mini preview with only this instance's RGB points ----
+                  const ai = mask_indices.indexOf(match.open3dis_eval_mask_index);
+                  if (ai !== -1 && miniScene) {
+                    const mask = mask_list[ai];
+                    const posArr = geometry.attributes.position.array;
+
+                    // Collect vertex indices in this mask
+                    const verts = [];
+                    if (mask.counts !== undefined) {
+                      const cc = mask.counts;
+                      for (let k = 0; k < cc.length; k += 2)
+                        for (let p = cc[k]; p < cc[k] + cc[k+1]; p++) verts.push(p);
+                    } else if (mask.length === n_points) {
+                      for (let p = 0; p < n_points; p++) if (mask[p]) verts.push(p);
+                    } else {
+                      for (let p = 0; p < mask.length; p++) verts.push(mask[p]);
+                    }
+
+                    const mPos = new Float32Array(verts.length * 3);
+                    const mCol = new Float32Array(verts.length * 3);
+                    verts.forEach((v, j) => {
+                      mPos[j*3]   = posArr[v*3];   mPos[j*3+1] = posArr[v*3+1]; mPos[j*3+2] = posArr[v*3+2];
+                      mCol[j*3]   = originalColors[v*3]; mCol[j*3+1] = originalColors[v*3+1]; mCol[j*3+2] = originalColors[v*3+2];
+                    });
+
+                    const mGeo = new THREE.BufferGeometry();
+                    mGeo.setAttribute('position', new THREE.BufferAttribute(mPos, 3));
+                    mGeo.setAttribute('color',    new THREE.BufferAttribute(mCol, 3));
+
+                    mGeo.computeBoundingBox();
+                    const mCenter = new THREE.Vector3();
+                    mGeo.boundingBox.getCenter(mCenter);
+
+                    const mMesh = new THREE.Points(mGeo, new THREE.PointsMaterial({ size: 0.04, vertexColors: true }));
+                    mMesh.position.sub(mCenter);
+
+                    // Clear old mini group content and replace
+                    while (miniGroup.children.length) miniGroup.remove(miniGroup.children[0]);
+                    miniGroup.add(mMesh);
+                    miniGroup.rotation.x = -Math.PI / 2;
+                    miniGroup.rotation.z = 0;
+
+                    // Fit mini camera to object size
+                    mGeo.computeBoundingSphere();
+                    const r = mGeo.boundingSphere.radius || 1;
+                    miniCamera.position.set(0, r * 1.5, r * 2.2);
+                    miniCamera.lookAt(0, 0, 0);
+                    miniLoaded = true;
                   }
                 });
 
@@ -491,10 +527,42 @@
               if (lt) lt.innerText = 'Failed to load 3D Scene.';
             });
 
+            // ---- Mini viewer setup (runs once, outside PLY callback) ----
+            const miniContainer = document.getElementById('mini-container');
+            const miniScene    = miniContainer ? new THREE.Scene() : null;
+            let   miniGroup    = new THREE.Group();
+            let   miniCamera   = null;
+            let   miniRenderer = null;
+            let   miniLoaded   = false;
+
+            if (miniScene && miniContainer) {
+              miniScene.background = new THREE.Color(0xf0f0f0);
+              miniScene.add(miniGroup);
+              miniCamera = new THREE.PerspectiveCamera(45, 1, 0.01, 500);
+              miniCamera.position.set(0, 2, 3);
+              miniRenderer = new THREE.WebGLRenderer({ antialias: true });
+              miniRenderer.setPixelRatio(window.devicePixelRatio);
+              // Size will be set in first animate frame when container has dimensions
+              miniContainer.appendChild(miniRenderer.domElement);
+            }
+
             function animate() {
               requestAnimationFrame(animate);
               if (loadedConfigured && isRotating) sceneGroup.rotation.z -= 0.005;
               renderer.render(scene, camera);
+
+              // Mini viewer
+              if (miniRenderer && miniScene && miniCamera) {
+                const w = miniContainer.clientWidth;
+                const h = miniContainer.clientHeight;
+                if (w > 0 && h > 0) {
+                  miniRenderer.setSize(w, h);
+                  miniCamera.aspect = w / h;
+                  miniCamera.updateProjectionMatrix();
+                }
+                if (miniLoaded) miniGroup.rotation.z += 0.012;
+                miniRenderer.render(miniScene, miniCamera);
+              }
             }
             animate();
 
