@@ -264,7 +264,7 @@
               const btnOv = document.getElementById('btn-ov');
 
               btnRgb.addEventListener('click', () => {
-                geometry.attributes.color.set(originalColors);
+                geometry.attributes.color.array.set(originalColors);
                 geometry.attributes.color.needsUpdate = true;
                 btnRgb.className = "button is-dark is-rounded";
                 btnRgb.style.border = "none";
@@ -283,7 +283,7 @@
                 btnRgb.style.color = "#363636";
 
                 if (ovColors) {
-                  geometry.attributes.color.set(ovColors);
+                  geometry.attributes.color.array.set(ovColors);
                   geometry.attributes.color.needsUpdate = true;
                   return;
                 }
@@ -294,6 +294,7 @@
                 }
 
                 try {
+                  console.log("Fetching JSON files...");
                   const [indexRes, arrayRes] = await Promise.all([
                     fetch('static/resources/data/scene0011_00_index.json'),
                     fetch('static/resources/data/scene0011_00_ins_arrays.json')
@@ -301,24 +302,32 @@
                   const indexData = await indexRes.json();
                   const insData = await arrayRes.json();
 
+                  console.log("Loaded JSON data successfully.");
                   const newColors = new Float32Array(originalColors);
                   const maskPalette = {};
                   const matches = indexData.matches;
-                  const mask_list = insData.ins_merged_eval;
+                  const mask_list = insData.ins_merged_eval || insData.ins_final_ov; // fallback just in case
                   const mask_indices = insData.open3dis_eval_mask_index;
                   const n_points = insData.n_points;
 
-                  // 33 masks -> generate beautiful distinct colors
+                  console.log(`Processing ${matches.length} target masks out of total points: ${n_points}`);
+                  let paintedPoints = 0;
+
+                  // 33 masks -> generate distinct colors
                   for (let i = 0; i < matches.length; i++) {
                     const match = matches[i];
                     const target_idx = match.open3dis_eval_mask_index;
                     const array_idx = mask_indices.indexOf(target_idx);
-                    if (array_idx === -1) continue;
+                    
+                    if (array_idx === -1) {
+                      console.warn(`Target index ${target_idx} not found in array!`);
+                      continue;
+                    }
 
                     // Generate distinct HSL color
                     if (!maskPalette[target_idx]) {
-                      const hue = (i * 137.508) % 360; // Golden angle for nice distribution
-                      maskPalette[target_idx] = new THREE.Color(`hsl(${Math.round(hue)}, 80%, 50%)`);
+                      const hue = (i * 137.508) % 360; 
+                      maskPalette[target_idx] = new THREE.Color(`hsl(${Math.round(hue)}, 90%, 55%)`);
                     }
                     const color = maskPalette[target_idx];
                     const mask = mask_list[array_idx];
@@ -330,6 +339,7 @@
                           newColors[p * 3] = color.r;
                           newColors[p * 3 + 1] = color.g;
                           newColors[p * 3 + 2] = color.b;
+                          paintedPoints++;
                         }
                       }
                     } else {
@@ -338,15 +348,18 @@
                         newColors[ptIdx * 3] = color.r;
                         newColors[ptIdx * 3 + 1] = color.g;
                         newColors[ptIdx * 3 + 2] = color.b;
+                        paintedPoints++;
                       }
                     }
                   }
                   
+                  console.log(`Finished processing. Total points painted across all labels: ${paintedPoints}`);
                   ovColors = newColors;
-                  geometry.attributes.color.set(ovColors);
+                  geometry.attributes.color.array.set(ovColors);
                   geometry.attributes.color.needsUpdate = true;
                 } catch (e) {
                   console.error("Mask loading failed", e);
+                  alert("마스크 데이터를 로드하는 중 오류가 발생했습니다. (자세한 내용은 콘솔 F12 확인)");
                 } finally {
                   if (loadingText) loadingText.style.display = 'none';
                 }
