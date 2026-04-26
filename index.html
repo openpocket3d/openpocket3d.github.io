@@ -424,12 +424,12 @@
                 btn.className = 'inst-btn';
                 btn.title = `final_ins_index: ${match.open3dis_final_ins_index}`;
                 btn.style.cssText = [
-                  'width:100%', 'text-align:center', 'padding:7px 4px',
+                  'width:100%', 'text-align:left', 'padding:7px 10px',
                   'border-radius:6px', 'cursor:pointer', 'font-size:0.78rem',
                   'background:#fff', `border-left:4px solid ${hex}`, 'border-top:none',
                   'border-right:none', 'border-bottom:none',
                   'box-shadow:0 1px 3px rgba(0,0,0,0.08)',
-                  'display:flex', 'align-items:center', 'justify-content:center', 'gap:5px',
+                  'display:flex', 'align-items:center', 'justify-content:flex-start', 'gap:8px',
                   'transition:background 0.12s', 'font-weight:400',
                 ].join(';');
 
@@ -473,8 +473,7 @@
                     const mask = mask_list[ai];
                     const posArr = geometry.attributes.position.array;
 
-                    // Collect vertex indices in this mask
-                    const verts = [];
+                    let verts = [];
                     if (mask.counts !== undefined) {
                       const cc = mask.counts;
                       for (let k = 0; k < cc.length; k += 2)
@@ -484,6 +483,82 @@
                     } else {
                       for (let p = 0; p < mask.length; p++) verts.push(mask[p]);
                     }
+
+                    // --- Noise Filter (Voxel Grid Connected Components) ---
+                    if (verts.length > 50) {
+                      let minX=Infinity, minY=Infinity, minZ=Infinity;
+                      let maxX=-Infinity, maxY=-Infinity, maxZ=-Infinity;
+                      for (let i=0; i<verts.length; i++) {
+                        let idx = verts[i]*3;
+                        let x = posArr[idx], y = posArr[idx+1], z = posArr[idx+2];
+                        if (x < minX) minX = x; if (x > maxX) maxX = x;
+                        if (y < minY) minY = y; if (y > maxY) maxY = y;
+                        if (z < minZ) minZ = z; if (z > maxZ) maxZ = z;
+                      }
+                      const maxDim = Math.max(maxX-minX, maxY-minY, maxZ-minZ);
+                      if (maxDim > 0) {
+                        const binSize = maxDim / 30; // 30x30x30 grid
+                        const voxelMap = new Map();
+                        const voxelPoints = new Map();
+                        for (let i=0; i<verts.length; i++) {
+                          let idx = verts[i]*3;
+                          let gx = Math.floor((posArr[idx]-minX)/binSize);
+                          let gy = Math.floor((posArr[idx+1]-minY)/binSize);
+                          let gz = Math.floor((posArr[idx+2]-minZ)/binSize);
+                          let key = `${gx},${gy},${gz}`;
+                          if (!voxelPoints.has(key)) {
+                            voxelPoints.set(key, []);
+                            voxelMap.set(key, {gx, gy, gz});
+                          }
+                          voxelPoints.get(key).push(verts[i]);
+                        }
+                        const visited = new Set();
+                        let maxPoints = 0;
+                        let bestClusterKeys = [];
+                        const voxelKeys = Array.from(voxelMap.keys());
+                        for (let i=0; i<voxelKeys.length; i++) {
+                          const startKey = voxelKeys[i];
+                          if (visited.has(startKey)) continue;
+                          const cluster = [];
+                          const queue = [startKey];
+                          visited.add(startKey);
+                          let head = 0;
+                          while (head < queue.length) {
+                            const currKey = queue[head++];
+                            cluster.push(currKey);
+                            const {gx, gy, gz} = voxelMap.get(currKey);
+                            // Connect to neighbors within radius 2
+                            for (let dx=-2; dx<=2; dx++) {
+                              for (let dy=-2; dy<=2; dy++) {
+                                for (let dz=-2; dz<=2; dz++) {
+                                  if (dx===0 && dy===0 && dz===0) continue;
+                                  const nKey = `${gx+dx},${gy+dy},${gz+dz}`;
+                                  if (voxelMap.has(nKey) && !visited.has(nKey)) {
+                                    visited.add(nKey);
+                                    queue.push(nKey);
+                                  }
+                                }
+                              }
+                            }
+                          }
+                          let pointCount = 0;
+                          for (const k of cluster) pointCount += voxelPoints.get(k).length;
+                          if (pointCount > maxPoints) {
+                            maxPoints = pointCount;
+                            bestClusterKeys = cluster;
+                          }
+                        }
+                        if (bestClusterKeys.length > 0) {
+                          const newVerts = [];
+                          for (const k of bestClusterKeys) {
+                            const pts = voxelPoints.get(k);
+                            for (let i=0; i<pts.length; i++) newVerts.push(pts[i]);
+                          }
+                          verts = newVerts;
+                        }
+                      }
+                    }
+                    // --- End Noise Filter ---
 
                     const mPos = new Float32Array(verts.length * 3);
                     const mCol = new Float32Array(verts.length * 3);
@@ -560,7 +635,7 @@
                   miniCamera.aspect = w / h;
                   miniCamera.updateProjectionMatrix();
                 }
-                if (miniLoaded) miniGroup.rotation.z += 0.012;
+                if (miniLoaded) miniGroup.rotation.z -= 0.012;
                 miniRenderer.render(miniScene, miniCamera);
               }
             }
