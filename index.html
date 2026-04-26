@@ -406,7 +406,7 @@
               // Build class-counter map for labels like "chair #1", "chair #2"
               const classCounter = {};
               matches.forEach((match) => {
-                const label = (match.ov && match.ov.open3dis_original_result_label) || 'unknown';
+                const label = (match.oe && match.oe.openpocket3d_result_label) || 'unknown';
                 classCounter[label] = (classCounter[label] || 0) + 1;
               });
               const classSeen = {};
@@ -414,15 +414,16 @@
               matches.forEach((match, i) => {
                 const color = maskPalette[match.open3dis_eval_mask_index];
                 const hex   = '#' + color.getHexString();
-                const baseLabel = (match.ov && match.ov.open3dis_original_result_label) || `inst_${i}`;
+                const baseLabel = (match.oe && match.oe.openpocket3d_result_label) || `inst_${i}`;
                 classSeen[baseLabel] = (classSeen[baseLabel] || 0) + 1;
                 const label = classCounter[baseLabel] > 1
                   ? `${baseLabel} #${classSeen[baseLabel]}` : baseLabel;
+                const finalInsIdx = match.open3dis_final_ins_index;
                 const oeLabel = (match.oe && match.oe.openpocket3d_result_label) || '';
 
                 const btn = document.createElement('button');
                 btn.className = 'inst-btn';
-                btn.title = oeLabel ? `OE: ${oeLabel}` : '';
+                btn.title = `ins_idx: ${finalInsIdx}`;
                 btn.style.cssText = [
                   'width:100%', 'text-align:left', 'padding:6px 10px',
                   'border-radius:6px', 'cursor:pointer', 'font-size:0.8rem',
@@ -436,8 +437,12 @@
                 const dot = document.createElement('span');
                 dot.style.cssText = `display:inline-block;width:9px;height:9px;border-radius:50%;background:${hex};flex-shrink:0;`;
                 const txt = document.createElement('span');
+                txt.style.cssText = 'flex:1; overflow:hidden; white-space:nowrap; text-overflow:ellipsis;';
                 txt.textContent = label;
-                btn.appendChild(dot); btn.appendChild(txt);
+                const idx = document.createElement('span');
+                idx.style.cssText = 'font-size:0.7rem;color:#aaa;flex-shrink:0;';
+                idx.textContent = `#${finalInsIdx}`;
+                btn.appendChild(dot); btn.appendChild(txt); btn.appendChild(idx);
 
                 btn.addEventListener('mouseenter', () => { if (btn.style.fontWeight !== '700') btn.style.background = '#f0f0f0'; });
                 btn.addEventListener('mouseleave', () => { if (btn.style.fontWeight !== '700') btn.style.background = '#fff'; });
