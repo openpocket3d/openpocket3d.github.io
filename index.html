@@ -175,8 +175,8 @@
                 
                 <!-- Overlay Buttons (Right-aligned, Horizontal) -->
                 <div style="position: absolute; top: 15px; right: 15px; z-index: 20; display: flex; gap: 10px;">
-                  <button class="button is-dark is-rounded">RGB</button>
-                  <button class="button is-white is-rounded" style="border: 1px solid #363636; color: #363636;">OV backbone</button>
+                  <button id="btn-rgb" class="button is-dark is-rounded">RGB</button>
+                  <button id="btn-ov" class="button is-white is-rounded" style="border: 1px solid #363636; color: #363636;">OV backbone</button>
                 </div>
                 <div id="ply-loading"
                   style="position: absolute; z-index: 10; font-weight: bold; color: #555; background: rgba(255,255,255,0.8); padding: 10px 20px; border-radius: 8px;">
@@ -255,6 +255,102 @@
               if (loadingText) loadingText.style.display = 'none';
 
               loadedConfigured = true;
+
+              // Setup Buttons
+              const originalColors = new Float32Array(geometry.attributes.color.array);
+              let ovColors = null; // Cache for the OV mask colors
+
+              const btnRgb = document.getElementById('btn-rgb');
+              const btnOv = document.getElementById('btn-ov');
+
+              btnRgb.addEventListener('click', () => {
+                geometry.attributes.color.set(originalColors);
+                geometry.attributes.color.needsUpdate = true;
+                btnRgb.className = "button is-dark is-rounded";
+                btnRgb.style.border = "none";
+                btnRgb.style.color = "";
+                btnOv.className = "button is-white is-rounded";
+                btnOv.style.border = "1px solid #363636";
+                btnOv.style.color = "#363636";
+              });
+
+              btnOv.addEventListener('click', async () => {
+                btnOv.className = "button is-dark is-rounded";
+                btnOv.style.border = "none";
+                btnOv.style.color = "";
+                btnRgb.className = "button is-white is-rounded";
+                btnRgb.style.border = "1px solid #363636";
+                btnRgb.style.color = "#363636";
+
+                if (ovColors) {
+                  geometry.attributes.color.set(ovColors);
+                  geometry.attributes.color.needsUpdate = true;
+                  return;
+                }
+
+                if (loadingText) {
+                  loadingText.innerText = 'Calculating Masks... (Takes a moment)';
+                  loadingText.style.display = 'block';
+                }
+
+                try {
+                  const [indexRes, arrayRes] = await Promise.all([
+                    fetch('static/resources/data/scene0011_00_index.json'),
+                    fetch('static/resources/data/scene0011_00_ins_arrays.json')
+                  ]);
+                  const indexData = await indexRes.json();
+                  const insData = await arrayRes.json();
+
+                  const newColors = new Float32Array(originalColors);
+                  const maskPalette = {};
+                  const matches = indexData.matches;
+                  const mask_list = insData.ins_merged_eval;
+                  const mask_indices = insData.open3dis_eval_mask_index;
+                  const n_points = insData.n_points;
+
+                  // 33 masks -> generate beautiful distinct colors
+                  for (let i = 0; i < matches.length; i++) {
+                    const match = matches[i];
+                    const target_idx = match.open3dis_eval_mask_index;
+                    const array_idx = mask_indices.indexOf(target_idx);
+                    if (array_idx === -1) continue;
+
+                    // Generate distinct HSL color
+                    if (!maskPalette[target_idx]) {
+                      const hue = (i * 137.508) % 360; // Golden angle for nice distribution
+                      maskPalette[target_idx] = new THREE.Color(`hsl(${Math.round(hue)}, 80%, 50%)`);
+                    }
+                    const color = maskPalette[target_idx];
+                    const mask = mask_list[array_idx];
+
+                    // Safely handle both boolean mask arrays and point index arrays
+                    if (mask.length === n_points) {
+                      for (let p = 0; p < mask.length; p++) {
+                        if (mask[p]) {
+                          newColors[p * 3] = color.r;
+                          newColors[p * 3 + 1] = color.g;
+                          newColors[p * 3 + 2] = color.b;
+                        }
+                      }
+                    } else {
+                      for (let p = 0; p < mask.length; p++) {
+                        const ptIdx = mask[p];
+                        newColors[ptIdx * 3] = color.r;
+                        newColors[ptIdx * 3 + 1] = color.g;
+                        newColors[ptIdx * 3 + 2] = color.b;
+                      }
+                    }
+                  }
+                  
+                  ovColors = newColors;
+                  geometry.attributes.color.set(ovColors);
+                  geometry.attributes.color.needsUpdate = true;
+                } catch (e) {
+                  console.error("Mask loading failed", e);
+                } finally {
+                  if (loadingText) loadingText.style.display = 'none';
+                }
+              });
 
             }, undefined, function (error) {
               console.error(error);

@@ -1,0 +1,370 @@
+{
+  "scene_id": "scene0011_00",
+  "n_points": 237360,
+  "n_merged_eval_mask_candidates": 277,
+  "matches": [
+    {
+      "open3dis_eval_mask_index": 0,
+      "open3dis_final_ins_index": 198,
+      "oe": {
+        "openpocket3d_result_label": "chair",
+        "sentence_bert_mapping_label": "chair"
+      },
+      "ov": {
+        "open3dis_original_result_label": "chair"
+      }
+    },
+    {
+      "open3dis_eval_mask_index": 1,
+      "open3dis_final_ins_index": 96,
+      "oe": {
+        "openpocket3d_result_label": "chair",
+        "sentence_bert_mapping_label": "chair"
+      },
+      "ov": {
+        "open3dis_original_result_label": "folded chair"
+      }
+    },
+    {
+      "open3dis_eval_mask_index": 2,
+      "open3dis_final_ins_index": 69,
+      "oe": {
+        "openpocket3d_result_label": "chairs",
+        "sentence_bert_mapping_label": "chair"
+      },
+      "ov": {
+        "open3dis_original_result_label": "folded chair"
+      }
+    },
+    {
+      "open3dis_eval_mask_index": 3,
+      "open3dis_final_ins_index": 151,
+      "oe": {
+        "openpocket3d_result_label": "chair",
+        "sentence_bert_mapping_label": "chair"
+      },
+      "ov": {
+        "open3dis_original_result_label": "folded chair"
+      }
+    },
+    {
+      "open3dis_eval_mask_index": 4,
+      "open3dis_final_ins_index": 101,
+      "oe": {
+        "openpocket3d_result_label": "table",
+        "sentence_bert_mapping_label": "table"
+      },
+      "ov": {
+        "open3dis_original_result_label": "kitchen counter"
+      }
+    },
+    {
+      "open3dis_eval_mask_index": 5,
+      "open3dis_final_ins_index": 99,
+      "oe": {
+        "openpocket3d_result_label": "cabinet",
+        "sentence_bert_mapping_label": "cabinet"
+      },
+      "ov": {
+        "open3dis_original_result_label": "kitchen counter"
+      }
+    },
+    {
+      "open3dis_eval_mask_index": 20,
+      "open3dis_final_ins_index": 3,
+      "oe": {
+        "openpocket3d_result_label": "refrigerator",
+        "sentence_bert_mapping_label": "refrigerator"
+      },
+      "ov": {
+        "open3dis_original_result_label": "refrigerator"
+      }
+    },
+    {
+      "open3dis_eval_mask_index": 117,
+      "open3dis_final_ins_index": 126,
+      "oe": {
+        "openpocket3d_result_label": "trash can",
+        "sentence_bert_mapping_label": "trash can"
+      },
+      "ov": {
+        "open3dis_original_result_label": "bin"
+      }
+    },
+    {
+      "open3dis_eval_mask_index": 119,
+      "open3dis_final_ins_index": 156,
+      "oe": {
+        "openpocket3d_result_label": "table",
+        "sentence_bert_mapping_label": "table"
+      },
+      "ov": {
+        "open3dis_original_result_label": "couch"
+      }
+    },
+    {
+      "open3dis_eval_mask_index": 130,
+      "open3dis_final_ins_index": 174,
+      "oe": {
+        "openpocket3d_result_label": "door",
+        "sentence_bert_mapping_label": "door"
+      },
+      "ov": {
+        "open3dis_original_result_label": "closet door"
+      }
+    },
+    {
+      "open3dis_eval_mask_index": 139,
+      "open3dis_final_ins_index": 125,
+      "oe": {
+        "openpocket3d_result_label": "chairs",
+        "sentence_bert_mapping_label": "chair"
+      },
+      "ov": {
+        "open3dis_original_result_label": "folded chair"
+      }
+    },
+    {
+      "open3dis_eval_mask_index": 180,
+      "open3dis_final_ins_index": 127,
+      "oe": {
+        "openpocket3d_result_label": "chair",
+        "sentence_bert_mapping_label": "chair"
+      },
+      "ov": {
+        "open3dis_original_result_label": "folded chair"
+      }
+    },
+    {
+      "open3dis_eval_mask_index": 182,
+      "open3dis_final_ins_index": 49,
+      "oe": {
+        "openpocket3d_result_label": "chair",
+        "sentence_bert_mapping_label": "chair"
+      },
+      "ov": {
+        "open3dis_original_result_label": "folded chair"
+      }
+    },
+    {
+      "open3dis_eval_mask_index": 189,
+      "open3dis_final_ins_index": 91,
+      "oe": {
+        "openpocket3d_result_label": "chair",
+        "sentence_bert_mapping_label": "chair"
+      },
+      "ov": {
+        "open3dis_original_result_label": "folded chair"
+      }
+    },
+    {
+      "open3dis_eval_mask_index": 194,
+      "open3dis_final_ins_index": 84,
+      "oe": {
+        "openpocket3d_result_label": "chair",
+        "sentence_bert_mapping_label": "chair"
+      },
+      "ov": {
+        "open3dis_original_result_label": "folded chair"
+      }
+    },
+    {
+      "open3dis_eval_mask_index": 195,
+      "open3dis_final_ins_index": 77,
+      "oe": {
+        "openpocket3d_result_label": "chair",
+        "sentence_bert_mapping_label": "chair"
+      },
+      "ov": {
+        "open3dis_original_result_label": "folded chair"
+      }
+    },
+    {
+      "open3dis_eval_mask_index": 198,
+      "open3dis_final_ins_index": 42,
+      "oe": {
+        "openpocket3d_result_label": "chair",
+        "sentence_bert_mapping_label": "chair"
+      },
+      "ov": {
+        "open3dis_original_result_label": "folded chair"
+      }
+    },
+    {
+      "open3dis_eval_mask_index": 199,
+      "open3dis_final_ins_index": 59,
+      "oe": {
+        "openpocket3d_result_label": "chair",
+        "sentence_bert_mapping_label": "chair"
+      },
+      "ov": {
+        "open3dis_original_result_label": "folded chair"
+      }
+    },
+    {
+      "open3dis_eval_mask_index": 201,
+      "open3dis_final_ins_index": 60,
+      "oe": {
+        "openpocket3d_result_label": "tv",
+        "sentence_bert_mapping_label": "tv"
+      },
+      "ov": {
+        "open3dis_original_result_label": "projector screen"
+      }
+    },
+    {
+      "open3dis_eval_mask_index": 210,
+      "open3dis_final_ins_index": 160,
+      "oe": {
+        "openpocket3d_result_label": "trash can",
+        "sentence_bert_mapping_label": "trash can"
+      },
+      "ov": {
+        "open3dis_original_result_label": "trash can"
+      }
+    },
+    {
+      "open3dis_eval_mask_index": 212,
+      "open3dis_final_ins_index": 221,
+      "oe": {
+        "openpocket3d_result_label": "window",
+        "sentence_bert_mapping_label": "window"
+      },
+      "ov": {
+        "open3dis_original_result_label": "window"
+      }
+    },
+    {
+      "open3dis_eval_mask_index": 215,
+      "open3dis_final_ins_index": 143,
+      "oe": {
+        "openpocket3d_result_label": "door",
+        "sentence_bert_mapping_label": "door"
+      },
+      "ov": {
+        "open3dis_original_result_label": "door"
+      }
+    },
+    {
+      "open3dis_eval_mask_index": 225,
+      "open3dis_final_ins_index": 227,
+      "oe": {
+        "openpocket3d_result_label": "refrigerator",
+        "sentence_bert_mapping_label": "refrigerator"
+      },
+      "ov": {
+        "open3dis_original_result_label": "doorframe"
+      }
+    },
+    {
+      "open3dis_eval_mask_index": 227,
+      "open3dis_final_ins_index": 113,
+      "oe": {
+        "openpocket3d_result_label": "table",
+        "sentence_bert_mapping_label": "table"
+      },
+      "ov": {
+        "open3dis_original_result_label": "kitchen counter"
+      }
+    },
+    {
+      "open3dis_eval_mask_index": 230,
+      "open3dis_final_ins_index": 46,
+      "oe": {
+        "openpocket3d_result_label": "chairs",
+        "sentence_bert_mapping_label": "chair"
+      },
+      "ov": {
+        "open3dis_original_result_label": "folded chair"
+      }
+    },
+    {
+      "open3dis_eval_mask_index": 232,
+      "open3dis_final_ins_index": 210,
+      "oe": {
+        "openpocket3d_result_label": "window",
+        "sentence_bert_mapping_label": "window"
+      },
+      "ov": {
+        "open3dis_original_result_label": "window"
+      }
+    },
+    {
+      "open3dis_eval_mask_index": 237,
+      "open3dis_final_ins_index": 451,
+      "oe": {
+        "openpocket3d_result_label": "refrigerator",
+        "sentence_bert_mapping_label": "refrigerator"
+      },
+      "ov": {
+        "open3dis_original_result_label": "printer"
+      }
+    },
+    {
+      "open3dis_eval_mask_index": 240,
+      "open3dis_final_ins_index": 302,
+      "oe": {
+        "openpocket3d_result_label": "table",
+        "sentence_bert_mapping_label": "table"
+      },
+      "ov": {
+        "open3dis_original_result_label": "desk"
+      }
+    },
+    {
+      "open3dis_eval_mask_index": 245,
+      "open3dis_final_ins_index": 211,
+      "oe": {
+        "openpocket3d_result_label": "sink",
+        "sentence_bert_mapping_label": "sink"
+      },
+      "ov": {
+        "open3dis_original_result_label": "dresser"
+      }
+    },
+    {
+      "open3dis_eval_mask_index": 247,
+      "open3dis_final_ins_index": 9,
+      "oe": {
+        "openpocket3d_result_label": "refrigerator",
+        "sentence_bert_mapping_label": "refrigerator"
+      },
+      "ov": {
+        "open3dis_original_result_label": "refrigerator"
+      }
+    },
+    {
+      "open3dis_eval_mask_index": 259,
+      "open3dis_final_ins_index": 1,
+      "oe": {
+        "openpocket3d_result_label": "countertop",
+        "sentence_bert_mapping_label": "kitchen counter"
+      },
+      "ov": {
+        "open3dis_original_result_label": "kitchen counter"
+      }
+    },
+    {
+      "open3dis_eval_mask_index": 271,
+      "open3dis_final_ins_index": 34,
+      "oe": {
+        "openpocket3d_result_label": "cabinets",
+        "sentence_bert_mapping_label": "cabinet"
+      },
+      "ov": {
+        "open3dis_original_result_label": "kitchen counter"
+      }
+    },
+    {
+      "open3dis_eval_mask_index": 274,
+      "open3dis_final_ins_index": 70,
+      "oe": {
+        "openpocket3d_result_label": "door",
+        "sentence_bert_mapping_label": "door"
+      },
+      "ov": {
+        "open3dis_original_result_label": "doorframe"
+      }
+    }
+  ]
+}
