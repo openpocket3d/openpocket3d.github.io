@@ -190,11 +190,11 @@
 
             <!-- Instance panel: 3-col × 4-row grid + mini preview below -->
             <div id="instance-panel"
-              style="display: none; flex-shrink: 0; width: 310px; height: 500px;
+              style="display: none; flex-shrink: 0; width: 456px; height: 500px;
                      background: #fafafa; border: 1px solid #ddd; border-radius: 8px;
                      padding: 12px; box-sizing: border-box; flex-direction: column; gap: 8px;">
               <div id="instance-btn-list"
-                style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px; flex-shrink: 0;">
+                style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 7px; flex-shrink: 0;">
               </div>
               <!-- Mini point-cloud preview -->
               <div id="mini-container"
@@ -446,8 +446,10 @@
                 btn.className = 'inst-btn';
                 btn.title = `final_ins_index: ${match.open3dis_final_ins_index}`;
                 btn.style.cssText = [
-                  'width:100%', 'text-align:left', 'padding:7px 10px',
+                  'width:100%', 'min-height:34px', 'box-sizing:border-box',
+                  'text-align:left', 'padding:7px 10px',
                   'border-radius:6px', 'cursor:pointer', 'font-size:0.78rem',
+                  'line-height:1.25',
                   'background:#fff', `border-left:4px solid ${hex}`, 'border-top:none',
                   'border-right:none', 'border-bottom:none',
                   'box-shadow:0 1px 3px rgba(0,0,0,0.08)',
@@ -459,6 +461,7 @@
                 dot.style.cssText = `display:inline-block;width:8px;height:8px;border-radius:50%;background:${hex};flex-shrink:0;`;
                 const txt = document.createElement('span');
                 txt.textContent = label;
+                txt.style.cssText = 'flex:1 1 0;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis';
                 btn.appendChild(dot);
                 btn.appendChild(txt);
 
