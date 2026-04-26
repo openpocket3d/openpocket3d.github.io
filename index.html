@@ -372,10 +372,10 @@
 
                   console.log(`Finished. Points painted: ${paintedPoints}`);
 
-                  // --- Darken unmasked points so colored segments pop ---
-                  const DIM = 0.12; // how dark background becomes (0=black, 1=original)
-                  // Build a flag array: 1 if painted, 0 if not
-                  const painted = new Uint8Array(n_points); // all 0 by default
+                  // --- Fade unmasked points toward white so colored segments pop ---
+                  const FADE = 0.82; // 0 = original RGB, 1 = pure white
+                  // Build a flag array: 1 if painted by a mask
+                  const painted = new Uint8Array(n_points);
                   for (let i = 0; i < matches.length; i++) {
                     const target_idx = matches[i].open3dis_eval_mask_index;
                     const array_idx  = mask_indices.indexOf(target_idx);
@@ -395,15 +395,15 @@
                       for (let p = 0; p < mask.length; p++) { painted[mask[p]] = 1; }
                     }
                   }
-                  // Apply dimming to unpainted points
+                  // Lerp unmasked points toward white (1, 1, 1)
                   for (let p = 0; p < n_points; p++) {
                     if (!painted[p]) {
-                      newColors[p * 3]     *= DIM;
-                      newColors[p * 3 + 1] *= DIM;
-                      newColors[p * 3 + 2] *= DIM;
+                      newColors[p * 3]     = newColors[p * 3]     + (1 - newColors[p * 3])     * FADE;
+                      newColors[p * 3 + 1] = newColors[p * 3 + 1] + (1 - newColors[p * 3 + 1]) * FADE;
+                      newColors[p * 3 + 2] = newColors[p * 3 + 2] + (1 - newColors[p * 3 + 2]) * FADE;
                     }
                   }
-                  // --- end darkening ---
+                  // --- end fade ---
 
                   ovColors = newColors;
                   geometry.attributes.color.array.set(ovColors);
