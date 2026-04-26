@@ -373,7 +373,7 @@
                   console.log(`Finished. Points painted: ${paintedPoints}`);
 
                   // --- Fade unmasked points toward white so colored segments pop ---
-                  const FADE = 0.82; // 0 = original RGB, 1 = pure white
+                  const FADE = 0.5; // 0 = original RGB, 1 = pure white
                   // Build a flag array: 1 if painted by a mask
                   const painted = new Uint8Array(n_points);
                   for (let i = 0; i < matches.length; i++) {
