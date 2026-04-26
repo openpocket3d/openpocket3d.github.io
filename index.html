@@ -166,7 +166,7 @@
     <div class="container is-max-desktop">
       <div class="columns is-centered">
         <div class="column is-full-width">
-          <h2 class="title is-3">Visual Examples</h2>
+          <h2 class="title is-3">Interactive Demo</h2>
 
           <div class="columns is-centered">
             <div class="column is-full-width">
@@ -259,7 +259,7 @@
             function animate() {
               requestAnimationFrame(animate);
               if (loadedConfigured) {
-                sceneGroup.rotation.z += 0.005; // Spin around its local Z axis
+                sceneGroup.rotation.z -= 0.005; // Spin clockwise around its local Z axis
               }
               renderer.render(scene, camera);
             }
