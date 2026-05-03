@@ -1,0 +1,230 @@
+{
+  "scene": "scene0011_00",
+  "instances": {
+    "3": {
+      "inst": 20,
+      "views": ["00070", "00046", "00072", "00044", "00054"],
+      "tagsByView": [
+        { "key": "v1", "viewId": "00070", "tags": ["refrigerator", "window", "cabinet", "countertop"] },
+        { "key": "v2", "viewId": "00046", "tags": ["refrigerator", "window", "sink", "cabinet"] },
+        { "key": "v3", "viewId": "00072", "tags": ["refrigerator", "window", "sink", "cabinet", "door"] },
+        { "key": "v4", "viewId": "00044", "tags": ["refrigerator", "window", "sink", "cabinet", "countertop"] },
+        { "key": "v5", "viewId": "00054", "tags": ["refrigerator", "window", "sink", "countertop", "cabinets"] }
+      ],
+      "candidates": [
+        { "label": "refrigerator", "vw": 0.9952, "point": 0.9842, "fused": 1.0 },
+        { "label": "door", "vw": 0.001, "point": 0.0158, "fused": 0.0 }
+      ],
+      "top1": { "label": "refrigerator", "fused": 1.0 }
+    },
+    "42": {
+      "inst": 198,
+      "views": ["00314", "00312", "00316", "00378", "00380"],
+      "tagsByView": [
+        { "key": "v1", "viewId": "00314", "tags": ["table", "chair", "floor", "window"] },
+        { "key": "v2", "viewId": "00312", "tags": ["table", "chair", "floor", "window"] },
+        { "key": "v3", "viewId": "00316", "tags": ["table", "chair", "floor", "wall"] },
+        { "key": "v4", "viewId": "00378", "tags": ["table", "chair", "microwave", "window", "floor"] },
+        { "key": "v5", "viewId": "00380", "tags": ["table", "chairs", "microwave", "window", "floor"] }
+      ],
+      "candidates": [
+        { "label": "chair", "vw": 0.3274, "point": 1.0, "fused": 1.0 },
+        { "label": "table", "vw": 0.1315, "point": 0.0, "fused": 0.1575 },
+        { "label": "chairs", "vw": 0.091, "point": 0.0, "fused": 0.1074 },
+        { "label": "floor", "vw": 0.0042, "point": 0.0, "fused": 0.0 }
+      ],
+      "top1": { "label": "chair", "fused": 1.0 }
+    },
+    "49": {
+      "inst": 182,
+      "views": ["00334", "00332", "00158", "00330", "00162"],
+      "tagsByView": [
+        { "key": "v1", "viewId": "00334", "tags": ["table", "chair", "door", "floor"] },
+        { "key": "v2", "viewId": "00332", "tags": ["table", "chair", "floor", "door", "window"] },
+        { "key": "v3", "viewId": "00158", "tags": ["table", "chair", "floor", "wall", "cabinet"] },
+        { "key": "v4", "viewId": "00330", "tags": ["table", "chairs", "floor", "door", "window"] },
+        { "key": "v5", "viewId": "00162", "tags": ["chairs", "table", "floor"] }
+      ],
+      "candidates": [
+        { "label": "chair", "vw": 0.2972, "point": 0.6744, "fused": 1.0 },
+        { "label": "chairs", "vw": 0.1976, "point": 0.2447, "fused": 0.4836 },
+        { "label": "table", "vw": 0.0, "point": 0.0809, "fused": 0.072 },
+        { "label": "floor", "vw": 0.0107, "point": 0.0, "fused": 0.0144 }
+      ],
+      "top1": { "label": "chair", "fused": 1.0 }
+    },
+    "60": {
+      "inst": 201,
+      "views": ["00236", "00238", "00426", "00424", "00230"],
+      "tagsByView": [
+        { "key": "v1", "viewId": "00236", "tags": ["tv", "table", "chair", "trash can", "door"] },
+        { "key": "v2", "viewId": "00238", "tags": ["tv", "table", "chair", "trash can"] },
+        { "key": "v3", "viewId": "00426", "tags": ["tv", "table", "wall", "light switch", "window", "chair"] },
+        { "key": "v4", "viewId": "00424", "tags": ["tv", "table", "wall", "window", "trash can"] },
+        { "key": "v5", "viewId": "00230", "tags": ["tv", "table", "chair", "door", "exit sign"] }
+      ],
+      "candidates": [
+        { "label": "tv", "vw": 0.9827, "point": 0.6525, "fused": 1.0 },
+        { "label": "window", "vw": 0.0036, "point": 0.2959, "fused": 0.2693 },
+        { "label": "light switch", "vw": 0.0, "point": 0.0432, "fused": 0.0325 },
+        { "label": "wall", "vw": 0.0034, "point": 0.0083, "fused": 0.0014 }
+      ],
+      "top1": { "label": "tv", "fused": 1.0 }
+    },
+    "77": {
+      "inst": 195,
+      "views": ["00158", "00408", "00406", "00404", "00402"],
+      "tagsByView": [
+        { "key": "v1", "viewId": "00158", "tags": ["table", "chair", "floor", "wall", "cabinet"] },
+        { "key": "v2", "viewId": "00408", "tags": ["chair", "table", "television", "cabinet"] },
+        { "key": "v3", "viewId": "00406", "tags": ["chair", "table", "floor", "oven", "cabinet"] },
+        { "key": "v4", "viewId": "00404", "tags": ["chair", "table", "refrigerator", "window", "floor", "counter", "cabinet"] },
+        { "key": "v5", "viewId": "00402", "tags": ["table", "chairs", "refrigerator", "window", "tv", "cabinet"] }
+      ],
+      "candidates": [
+        { "label": "chair", "vw": 0.3183, "point": 0.699, "fused": 1.0 },
+        { "label": "table", "vw": 0.0929, "point": 0.2241, "fused": 0.3091 },
+        { "label": "chairs", "vw": 0.0918, "point": 0.0268, "fused": 0.1384 },
+        { "label": "oven", "vw": 0.0, "point": 0.0502, "fused": 0.0431 },
+        { "label": "counter", "vw": 0.0089, "point": 0.0, "fused": 0.0112 },
+        { "label": "floor", "vw": 0.0034, "point": 0.0, "fused": 0.0042 }
+      ],
+      "top1": { "label": "chair", "fused": 1.0 }
+    },
+    "84": {
+      "inst": 194,
+      "views": ["00392", "00390", "00394", "00396", "00388"],
+      "tagsByView": [
+        { "key": "v1", "viewId": "00392", "tags": ["table", "chairs", "window", "trash can", "tv"] },
+        { "key": "v2", "viewId": "00390", "tags": ["chair", "table", "window", "floor"] },
+        { "key": "v3", "viewId": "00394", "tags": ["table", "chair", "window", "floor", "wall", "television"] },
+        { "key": "v4", "viewId": "00396", "tags": ["table", "chairs", "window", "refrigerator", "tv"] },
+        { "key": "v5", "viewId": "00388", "tags": ["table", "chair", "window", "floor"] }
+      ],
+      "candidates": [
+        { "label": "chair", "vw": 0.2672, "point": 0.3807, "fused": 0.916 },
+        { "label": "chairs", "vw": 0.182, "point": 0.4426, "fused": 0.8715 },
+        { "label": "table", "vw": 0.0962, "point": 0.1767, "fused": 0.3815 },
+        { "label": "floor", "vw": 0.0021, "point": 0.0, "fused": 0.0 }
+      ],
+      "top1": { "label": "chair", "fused": 0.916 }
+    },
+    "113": {
+      "inst": 227,
+      "views": ["00374", "00380", "00382", "00378", "00386"],
+      "tagsByView": [
+        { "key": "v1", "viewId": "00374", "tags": ["table", "chair", "floor"] },
+        { "key": "v2", "viewId": "00380", "tags": ["table", "chairs", "microwave", "window", "floor"] },
+        { "key": "v3", "viewId": "00382", "tags": ["table", "chairs", "cabinets", "oven", "microwave", "window"] },
+        { "key": "v4", "viewId": "00378", "tags": ["table", "chair", "microwave", "window", "floor"] },
+        { "key": "v5", "viewId": "00386", "tags": ["table", "chairs", "microwave"] }
+      ],
+      "candidates": [
+        { "label": "table", "vw": 0.7137, "point": 0.8054, "fused": 1.0 },
+        { "label": "chair", "vw": 0.0424, "point": 0.0764, "fused": 0.0806 },
+        { "label": "chairs", "vw": 0.0857, "point": 0.0177, "fused": 0.0612 },
+        { "label": "microwave", "vw": 0.0, "point": 0.0745, "fused": 0.0555 },
+        { "label": "window", "vw": 0.0, "point": 0.0261, "fused": 0.0194 },
+        { "label": "floor", "vw": 0.0224, "point": 0.0, "fused": 0.0126 }
+      ],
+      "top1": { "label": "table", "fused": 1.0 }
+    },
+    "127": {
+      "inst": 180,
+      "views": ["00380", "00378", "00382", "00302", "00300"],
+      "tagsByView": [
+        { "key": "v1", "viewId": "00380", "tags": ["table", "chairs", "microwave", "window", "floor"] },
+        { "key": "v2", "viewId": "00378", "tags": ["table", "chair", "microwave", "window", "floor"] },
+        { "key": "v3", "viewId": "00382", "tags": ["table", "chairs", "cabinets", "oven", "microwave", "window"] },
+        { "key": "v4", "viewId": "00302", "tags": ["chair", "counter", "floor", "table", "wall", "cabinet", "trash can"] },
+        { "key": "v5", "viewId": "00300", "tags": ["chair", "table", "trash can", "couch", "floor", "wall"] }
+      ],
+      "candidates": [
+        { "label": "chair", "vw": 0.4774, "point": 0.8456, "fused": 1.0 },
+        { "label": "chairs", "vw": 0.1812, "point": 0.0, "fused": 0.1518 },
+        { "label": "microwave", "vw": 0.0, "point": 0.1544, "fused": 0.1095 },
+        { "label": "floor", "vw": 0.0012, "point": 0.0, "fused": 0.001 }
+      ],
+      "top1": { "label": "chair", "fused": 1.0 }
+    },
+    "143": {
+      "inst": 215,
+      "views": ["00342", "00340", "00338", "00336", "00344"],
+      "tagsByView": [
+        { "key": "v1", "viewId": "00342", "tags": ["table", "chair", "door", "floor", "wall"] },
+        { "key": "v2", "viewId": "00340", "tags": ["table", "chair", "door", "floor", "window"] },
+        { "key": "v3", "viewId": "00338", "tags": ["table", "chair", "door", "floor"] },
+        { "key": "v4", "viewId": "00336", "tags": ["table", "chair", "door", "floor"] },
+        { "key": "v5", "viewId": "00344", "tags": ["table", "chair", "door", "floor"] }
+      ],
+      "candidates": [
+        { "label": "door", "vw": 0.8691, "point": 0.8842, "fused": 1.0 },
+        { "label": "window", "vw": 0.0147, "point": 0.0655, "fused": 0.0512 },
+        { "label": "table", "vw": 0.0, "point": 0.0489, "fused": 0.0332 },
+        { "label": "chair", "vw": 0.0574, "point": 0.0, "fused": 0.0264 },
+        { "label": "wall", "vw": 0.0, "point": 0.0014, "fused": 0.0009 }
+      ],
+      "top1": { "label": "door", "fused": 1.0 }
+    },
+    "160": {
+      "inst": 210,
+      "views": ["00412", "00418", "00416", "00414", "00306"],
+      "tagsByView": [
+        { "key": "v1", "viewId": "00412", "tags": ["chair", "table", "tv", "trash can"] },
+        { "key": "v2", "viewId": "00418", "tags": ["tv", "table", "chair", "trash can"] },
+        { "key": "v3", "viewId": "00416", "tags": ["tv", "table", "chair", "trash can", "wall", "floor", "door"] },
+        { "key": "v4", "viewId": "00414", "tags": ["tv", "table", "chair", "trash can"] },
+        { "key": "v5", "viewId": "00306", "tags": ["chair", "table", "trash can", "floor", "wall"] }
+      ],
+      "candidates": [
+        { "label": "trash can", "vw": 0.9646, "point": 0.9881, "fused": 1.0 },
+        { "label": "wall", "vw": 0.0, "point": 0.0119, "fused": 0.0072 },
+        { "label": "door", "vw": 0.006, "point": 0.0, "fused": 0.0025 },
+        { "label": "floor", "vw": 0.0021, "point": 0.0, "fused": 0.0009 }
+      ],
+      "top1": { "label": "trash can", "fused": 1.0 }
+    },
+    "210": {
+      "inst": 232,
+      "views": ["00196", "00192", "00394", "00396", "00398"],
+      "tagsByView": [
+        { "key": "v1", "viewId": "00196", "tags": ["vent", "window", "counter", "stove", "outlet", "cabinet"] },
+        { "key": "v2", "viewId": "00192", "tags": ["stove", "range hood", "window", "wall", "countertop", "cabinet", "outlet"] },
+        { "key": "v3", "viewId": "00394", "tags": ["table", "chair", "window", "floor", "wall", "television"] },
+        { "key": "v4", "viewId": "00396", "tags": ["table", "chairs", "window", "refrigerator", "tv"] },
+        { "key": "v5", "viewId": "00398", "tags": ["table", "chairs", "refrigerator", "window", "tv", "counter", "floor"] }
+      ],
+      "candidates": [
+        { "label": "window", "vw": 0.6763, "point": 0.9773, "fused": 1.0 },
+        { "label": "wall", "vw": 0.0401, "point": 0.0, "fused": 0.0237 },
+        { "label": "counter", "vw": 0.0322, "point": 0.0, "fused": 0.0191 },
+        { "label": "table", "vw": 0.0317, "point": 0.0, "fused": 0.0188 },
+        { "label": "refrigerator", "vw": 0.0, "point": 0.0227, "fused": 0.014 },
+        { "label": "chairs", "vw": 0.014, "point": 0.0, "fused": 0.0083 },
+        { "label": "range hood", "vw": 0.0087, "point": 0.0, "fused": 0.0052 },
+        { "label": "vent", "vw": 0.0023, "point": 0.0, "fused": 0.0013 }
+      ],
+      "top1": { "label": "window", "fused": 1.0 }
+    },
+    "211": {
+      "inst": 245,
+      "views": ["00474", "00472", "00454", "00144", "00104"],
+      "tagsByView": [
+        { "key": "v1", "viewId": "00474", "tags": ["table", "chair", "door", "floor", "light", "shadow"] },
+        { "key": "v2", "viewId": "00472", "tags": ["door", "chair", "table", "floor", "light", "shadow"] },
+        { "key": "v3", "viewId": "00454", "tags": ["table", "chair", "floor", "window", "cabinet"] },
+        { "key": "v4", "viewId": "00144", "tags": ["sink", "window", "countertop", "cabinets", "microwave", "oven", "chairs", "floor"] },
+        { "key": "v5", "viewId": "00104", "tags": ["sink", "faucet", "window", "cabinets", "countertop", "microwave"] }
+      ],
+      "candidates": [
+        { "label": "sink", "vw": 0.0169, "point": 0.2976, "fused": 0.6567 },
+        { "label": "countertop", "vw": 0.1195, "point": 0.0, "fused": 0.4 },
+        { "label": "faucet", "vw": 0.0, "point": 0.1055, "fused": 0.2127 },
+        { "label": "table", "vw": 0.0241, "point": 0.0, "fused": 0.0807 },
+        { "label": "chair", "vw": 0.0019, "point": 0.0, "fused": 0.0064 },
+        { "label": "shadow", "vw": 0.0003, "point": 0.0, "fused": 0.0011 }
+      ],
+      "top1": { "label": "sink", "fused": 0.6567 }
+    }
+  }
+}

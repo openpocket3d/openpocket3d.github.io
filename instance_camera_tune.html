@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Instance camera tune (temporary)</title>
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.158.0/build/three.module.js",
+        "three/addons/": "https://unpkg.com/three@0.158.0/examples/jsm/"
+      }
+    }
+  </script>
+  <style>
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0; height: 100%; overflow: hidden;
+      font-family: system-ui, sans-serif; background: #1a1a1a; color: #eee;
+    }
+    #wrap {
+      display: flex; flex-flow: row nowrap; align-items: stretch;
+      height: 100%; min-height: 0; width: 100%;
+    }
+    #canvas-wrap {
+      flex: 1 1 0; min-width: 0; min-height: 0;
+      position: relative; touch-action: none;
+    }
+    #canvas-wrap canvas { display: block; width: 100%; height: 100%; }
+    #sidebar {
+      flex: 0 0 min(320px, 36vw); width: min(320px, 36vw); max-width: 100%;
+      min-width: 260px; min-height: 0; padding: 12px; background: #242424;
+      border-left: 1px solid #333;
+      display: flex; flex-direction: column; gap: 8px;
+      overflow: hidden;
+    }
+    #sidebar > strong { flex-shrink: 0; }
+    #hint {
+      flex-shrink: 0; font-size: 0.78rem; color: #aaa; line-height: 1.45;
+    }
+    #btn-list {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 6px;
+      flex: 0 0 auto; flex-shrink: 0;
+      max-height: min(240px, 32vh); overflow-y: auto;
+      overscroll-behavior: contain;
+    }
+    .inst-btn {
+      text-align: left; padding: 6px 8px; font-size: 0.72rem; border-radius: 6px; cursor: pointer;
+      border: 1px solid #444; background: #2c2c2c; color: #eee;
+    }
+    .inst-btn:hover { background: #383838; }
+    .inst-btn.active { outline: 2px solid #6cf; font-weight: 600; }
+    #dump-btn {
+      flex-shrink: 0;
+      padding: 10px 12px; font-size: 0.95rem; cursor: pointer; border-radius: 8px;
+      border: none; background: #0d7; color: #111; font-weight: 600;
+    }
+    #dump-btn:hover { filter: brightness(1.08); }
+    #out {
+      flex: 1 1 0; min-height: 100px; min-width: 0;
+      width: 100%; font-size: 11px; font-family: ui-monospace, monospace;
+      background: #111; color: #cfc; border: 1px solid #444; border-radius: 6px; padding: 8px;
+      resize: none; overflow: auto;
+    }
+    #rz-row { flex-shrink: 0; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    #rz-range { flex: 1; min-width: 120px; }
+    #loading {
+      position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+      background: rgba(0,0,0,0.5); font-weight: 600; pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+  <div id="wrap">
+    <div id="canvas-wrap">
+      <div id="loading">Loading PLY…</div>
+    </div>
+    <div id="sidebar">
+      <strong>Instance camera tuning (temporary)</strong>
+      <div id="hint">
+        <strong>file://</strong> often blocks <code>fetch</code> for local PLY/JSON.
+        From the project root run <code>python3 -m http.server 8000</code>, then open this page over HTTP (same port).<br>
+        (1) Click an instance &mdash; mask color + five frustums<br>
+        (2) <code>sceneRotZ</code> slider + mouse orbit<br>
+        (3) &ldquo;Dump current camera parameters&rdquo; &rarr; merge into <code>instance_views_precomputed.json</code>
+      </div>
+      <div id="btn-list"></div>
+      <div id="rz-row">
+        <label for="rz-range">sceneRotZ</label>
+        <input type="range" id="rz-range" min="-3.14159" max="3.14159" step="0.005" value="0" />
+        <span id="rz-val" style="font-family:monospace;font-size:11px;">0</span>
+      </div>
+      <button type="button" id="dump-btn">Dump current camera parameters</button>
+      <textarea id="out" readonly spellcheck="false" placeholder="JSON appears here."></textarea>
+    </div>
+  </div>
+
+  <script src="static/resources/data/scene_mask_data.js"></script>
+  <script type="module">
+    import * as THREE from 'three';
+    import { PLYLoader } from 'three/addons/loaders/PLYLoader.js';
+    import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+    import { LineSegments2 } from 'three/addons/lines/LineSegments2.js';
+    import { LineSegmentsGeometry } from 'three/addons/lines/LineSegmentsGeometry.js';
+    import { LineMaterial } from 'three/addons/lines/LineMaterial.js';
+
+    function addInstantFrustums(parent, fin, data, colorsHex, resolution, lineWidthWorld = 0.015) {
+      const views = data[String(fin)];
+      if (!views || views.length !== 5) return;
+      const res = resolution.clone();
+      for (let j = 0; j < 5; j++) {
+        const v = views[j];
+        const lineGeo = new LineSegmentsGeometry();
+        lineGeo.setPositions(v.linePos);
+        const lineMat = new LineMaterial({
+          color: colorsHex[j],
+          linewidth: lineWidthWorld,
+          worldUnits: true,
+          resolution: res,
+          depthTest: true,
+          transparent: true,
+          opacity: 0.96,
+        });
+        const lines = new LineSegments2(lineGeo, lineMat);
+        lines.computeLineDistances();
+        lines.renderOrder = 2;
+        parent.add(lines);
+        const fillGeo = new THREE.BufferGeometry();
+        fillGeo.setAttribute('position', new THREE.Float32BufferAttribute(v.fillPos, 3));
+        fillGeo.setIndex(v.fillIdx);
+        fillGeo.computeVertexNormals();
+        const fillCol = new THREE.Color(colorsHex[j]).multiplyScalar(0.18);
+        const fillMesh = new THREE.Mesh(
+          fillGeo,
+          new THREE.MeshLambertMaterial({
+            color: fillCol,
+            transparent: true,
+            opacity: 0.34,
+            side: THREE.DoubleSide,
+            depthWrite: true,
+          }),
+        );
+        fillMesh.castShadow = true;
+        fillMesh.receiveShadow = false;
+        fillMesh.renderOrder = 1;
+        parent.add(fillMesh);
+      }
+    }
+
+    const FRUSTUM_LINE_WIDTH_WORLD = 0.015;
+    const KEEP_INS_IDX = new Set([3, 60, 127, 49, 84, 77, 42, 113, 143, 160, 210, 211]);
+
+    const canvasWrap = document.getElementById('canvas-wrap');
+    const loadingEl = document.getElementById('loading');
+    const btnList = document.getElementById('btn-list');
+    const out = document.getElementById('out');
+    const rzRange = document.getElementById('rz-range');
+    const rzVal = document.getElementById('rz-val');
+
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x222226);
+
+    const camera = new THREE.PerspectiveCamera(45, canvasWrap.clientWidth / Math.max(1, canvasWrap.clientHeight), 0.1, 1000);
+    camera.position.set(0, 3, 6);
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setSize(canvasWrap.clientWidth, canvasWrap.clientHeight);
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    canvasWrap.appendChild(renderer.domElement);
+    renderer.domElement.style.touchAction = 'none';
+
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.06;
+    controls.target.set(0, 0, 0);
+
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+    scene.add(ambientLight);
+    const dirLight = new THREE.DirectionalLight(0xffffff, 0.9);
+    dirLight.position.set(0, 120, 0);
+    dirLight.target.position.set(0, 0, 0);
+    dirLight.castShadow = true;
+    dirLight.shadow.mapSize.set(2048, 2048);
+    dirLight.shadow.camera.near = 0.5;
+    dirLight.shadow.camera.far = 500;
+    dirLight.shadow.bias = -0.0002;
+    scene.add(dirLight);
+    scene.add(dirLight.target);
+
+    const sceneGroup = new THREE.Group();
+    scene.add(sceneGroup);
+
+    let frustumGroup = null;
+    let frustumBakedData = null;
+    let activeFin = null;
+    let activeMatchIndex = null;
+    let maxDim = 1;
+
+    function disposeFrustumGroup() {
+      if (!frustumGroup) return;
+      frustumGroup.traverse((obj) => {
+        if (obj.geometry) obj.geometry.dispose();
+        if (obj.material) {
+          const mats = Array.isArray(obj.material) ? obj.material : [obj.material];
+          mats.forEach((m) => {
+            if (m.map) m.map.dispose();
+            m.dispose();
+          });
+        }
+      });
+      sceneGroup.remove(frustumGroup);
+      frustumGroup = null;
+    }
+
+    function updateFrustumLineResolution() {
+      if (!frustumGroup) return;
+      const res = new THREE.Vector2(renderer.domElement.width, renderer.domElement.height);
+      frustumGroup.traverse((o) => {
+        if (o.material && o.material.isLineMaterial) o.material.resolution.copy(res);
+      });
+    }
+
+    async function ensureFrustumBaked() {
+      if (frustumBakedData) return;
+      const r = await fetch('static/resources/data/frustums_precomputed.json');
+      if (!r.ok) throw new Error(String(r.status));
+      frustumBakedData = await r.json();
+    }
+
+    async function showFrustumsForFin(fin) {
+      disposeFrustumGroup();
+      await ensureFrustumBaked();
+      if (!frustumBakedData[String(fin)]) return;
+      const grp = new THREE.Group();
+      grp.name = 'frustumViews';
+      const cols = [0xff0000, 0xff8800, 0xffff00, 0x00ff00, 0x0088ff];
+      addInstantFrustums(
+        grp,
+        fin,
+        frustumBakedData,
+        cols,
+        new THREE.Vector2(renderer.domElement.width, renderer.domElement.height),
+        FRUSTUM_LINE_WIDTH_WORLD,
+      );
+      sceneGroup.add(grp);
+      frustumGroup = grp;
+    }
+
+    rzRange.addEventListener('input', () => {
+      const v = parseFloat(rzRange.value);
+      sceneGroup.rotation.z = v;
+      rzVal.textContent = v.toFixed(4);
+    });
+
+    document.getElementById('dump-btn').addEventListener('click', () => {
+      if (activeFin == null) {
+        out.value = '// Click an instance in the left grid (one of 12) to select a fin first.';
+        return;
+      }
+      const rz = sceneGroup.rotation.z;
+      const p = camera.position;
+      const t = controls.target;
+      const block = {
+        sceneRotZ: rz,
+        camX: p.x,
+        camY: p.y,
+        camZ: p.z,
+        lookAt: [t.x, t.y, t.z],
+        aspect: camera.aspect,
+      };
+      const oneEntry = { [String(activeFin)]: block };
+      const pretty = JSON.stringify(oneEntry, null, 2);
+      out.value = [
+        '// Copy only one top-level "fin" entry from the JSON below into instance_views_precomputed.json (mind commas).',
+        pretty,
+        '',
+        '// One line (for logs)',
+        `// fin=${activeFin} sceneRotZ=${rz} camX=${p.x} camY=${p.y} camZ=${p.z} lookAt=[${t.x},${t.y},${t.z}] aspect=${camera.aspect}`,
+      ].join('\n');
+      console.log('instance_camera_tune dump', activeFin, block);
+    });
+
+    const indexData = window.SCENE_INDEX_DATA;
+    const insData = window.SCENE_INS_DATA;
+    if (!indexData || !insData) {
+      out.value = 'scene_mask_data.js did not load.';
+      throw new Error('SCENE_* globals missing');
+    }
+    const matches = indexData.matches;
+    const mask_list = insData.ins_merged_eval || insData.ins_final_ov;
+    const mask_indices = insData.open3dis_eval_mask_index;
+    const n_points = insData.n_points;
+
+    function hslColor(h, s, l) {
+      const hh = ((h % 360) + 360) % 360;
+      return new THREE.Color(`hsl(${Math.round(hh)}, ${s}%, ${l}%)`);
+    }
+
+    const primaryMatches = matches
+      .filter((m) => KEEP_INS_IDX.has(m.open3dis_final_ins_index))
+      .sort((a, b) => a.open3dis_eval_mask_index - b.open3dis_eval_mask_index);
+    const secondaryMatches = matches.filter((m) => !KEEP_INS_IDX.has(m.open3dis_final_ins_index));
+    const primaryHues = [];
+    for (let k = 0; k < 12; k++) primaryHues.push(k * 30);
+    const secondarySlots = [];
+    for (let k = 0; k < 12; k++) secondarySlots.push({ h: 15 + k * 30, s: 72, l: 49 });
+    for (let k = 0; k < 9; k++) secondarySlots.push({ h: (22 + k * 30) % 360, s: 66, l: 58 });
+    const maskPalette = {};
+    primaryMatches.forEach((m, i) => {
+      maskPalette[m.open3dis_eval_mask_index] = hslColor(primaryHues[i], 88, 54);
+    });
+    secondaryMatches.forEach((m, i) => {
+      const sl = secondarySlots[i];
+      maskPalette[m.open3dis_eval_mask_index] = hslColor(sl.h, sl.s, sl.l);
+    });
+
+    function paintMask(colors, mask, color) {
+      if (mask.counts !== undefined) {
+        const c = mask.counts;
+        for (let i = 0; i < c.length; i += 2) {
+          const end = c[i] + c[i + 1];
+          for (let p = c[i]; p < end; p++) {
+            if (p * 3 + 2 < colors.length) {
+              colors[p * 3] = color.r;
+              colors[p * 3 + 1] = color.g;
+              colors[p * 3 + 2] = color.b;
+            }
+          }
+        }
+      } else if (mask.length === n_points) {
+        for (let p = 0; p < n_points; p++)
+          if (mask[p]) {
+            colors[p * 3] = color.r;
+            colors[p * 3 + 1] = color.g;
+            colors[p * 3 + 2] = color.b;
+          }
+      } else {
+        for (let p = 0; p < mask.length; p++) {
+          const i = mask[p];
+          colors[i * 3] = color.r;
+          colors[i * 3 + 1] = color.g;
+          colors[i * 3 + 2] = color.b;
+        }
+      }
+    }
+
+    function buildPainted(mask) {
+      const painted = new Uint8Array(n_points);
+      if (mask.counts !== undefined) {
+        const c = mask.counts;
+        for (let i = 0; i < c.length; i += 2) {
+          const end = c[i] + c[i + 1];
+          for (let p = c[i]; p < end; p++) if (p < n_points) painted[p] = 1;
+        }
+      } else if (mask.length === n_points) {
+        for (let p = 0; p < n_points; p++) if (mask[p]) painted[p] = 1;
+      } else {
+        for (let p = 0; p < mask.length; p++) painted[mask[p]] = 1;
+      }
+      return painted;
+    }
+
+    function applyFade(colors, painted, fade) {
+      for (let p = 0; p < n_points; p++) {
+        if (!painted[p]) {
+          colors[p * 3] += (1 - colors[p * 3]) * fade;
+          colors[p * 3 + 1] += (1 - colors[p * 3 + 1]) * fade;
+          colors[p * 3 + 2] += (1 - colors[p * 3 + 2]) * fade;
+        }
+      }
+    }
+
+    const instanceCache = {};
+    function computeInstanceColors(matchIdx) {
+      if (instanceCache[matchIdx]) return instanceCache[matchIdx];
+      const match = matches[matchIdx];
+      const ai = mask_indices.indexOf(match.open3dis_eval_mask_index);
+      if (ai === -1) return null;
+      const mask = mask_list[ai];
+      const c = new Float32Array(originalColorsRef);
+      paintMask(c, mask, maskPalette[match.open3dis_eval_mask_index]);
+      applyFade(c, buildPainted(mask), 0.3);
+      instanceCache[matchIdx] = c;
+      return c;
+    }
+
+    let originalColorsRef = null;
+    let geometryRef = null;
+
+    const loader = new PLYLoader();
+    loader.load(
+      'static/resources/scene/scene0011_00_vh_clean_2.ply',
+      async (geometry) => {
+        geometry.computeVertexNormals();
+        const material = new THREE.PointsMaterial({
+          size: 0.04,
+          vertexColors: geometry.hasAttribute('color'),
+          color: geometry.hasAttribute('color') ? 0xffffff : 0xcccccc,
+        });
+        const mesh = new THREE.Points(geometry, material);
+        mesh.castShadow = true;
+        geometry.computeBoundingBox();
+        const center = new THREE.Vector3();
+        geometry.boundingBox.getCenter(center);
+        mesh.position.sub(center);
+        sceneGroup.add(mesh);
+        sceneGroup.rotation.x = -Math.PI / 2;
+
+        const size = new THREE.Vector3();
+        geometry.boundingBox.getSize(size);
+        maxDim = Math.max(size.x, size.y, size.z);
+        sceneGroup.position.y += maxDim * 0.15;
+
+        sceneGroup.updateMatrixWorld(true);
+        const sceneBounds = new THREE.Box3().setFromObject(sceneGroup);
+        const groundSize = maxDim * 10;
+        const ground = new THREE.Mesh(
+          new THREE.PlaneGeometry(groundSize, groundSize),
+          new THREE.ShadowMaterial({ opacity: 0.22 }),
+        );
+        ground.rotation.x = -Math.PI / 2;
+        ground.position.set(
+          (sceneBounds.min.x + sceneBounds.max.x) * 0.5,
+          sceneBounds.min.y - maxDim * 0.025,
+          (sceneBounds.min.z + sceneBounds.max.z) * 0.5,
+        );
+        ground.receiveShadow = true;
+        scene.add(ground);
+
+        const sh = maxDim * 6;
+        dirLight.shadow.camera.left = -sh;
+        dirLight.shadow.camera.right = sh;
+        dirLight.shadow.camera.top = sh;
+        dirLight.shadow.camera.bottom = -sh;
+        dirLight.shadow.camera.near = 0.5;
+        dirLight.shadow.camera.far = maxDim * 40;
+        dirLight.position.set(0, maxDim * 28, 0);
+        dirLight.target.updateMatrixWorld();
+        dirLight.shadow.camera.updateProjectionMatrix();
+
+        originalColorsRef = new Float32Array(geometry.attributes.color.array);
+        geometryRef = geometry;
+
+        const normalCamY = maxDim * 0.5;
+        const normalCamZ = maxDim * 0.85;
+        camera.position.set(0, normalCamY, normalCamZ);
+        controls.target.set(0, 0, 0);
+        controls.update();
+
+        loadingEl.style.display = 'none';
+
+        matches.forEach((match, i) => {
+          if (!KEEP_INS_IDX.has(match.open3dis_final_ins_index)) return;
+          const color = maskPalette[match.open3dis_eval_mask_index];
+          const hex = '#' + color.getHexString();
+          const label = (match.oe && match.oe.openpocket3d_result_label) || `inst_${i}`;
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'inst-btn';
+          btn.textContent = label;
+          btn.title = `fin=${match.open3dis_final_ins_index}`;
+          btn.style.borderLeft = `4px solid ${hex}`;
+          btn.addEventListener('click', async () => {
+            btnList.querySelectorAll('.inst-btn').forEach((b) => b.classList.remove('active'));
+            btn.classList.add('active');
+            activeFin = match.open3dis_final_ins_index;
+            activeMatchIndex = i;
+            await showFrustumsForFin(activeFin);
+            updateFrustumLineResolution();
+            const c = computeInstanceColors(i);
+            if (c) {
+              geometry.attributes.color.array.set(c);
+              geometry.attributes.color.needsUpdate = true;
+            }
+          });
+          btnList.appendChild(btn);
+        });
+      },
+      undefined,
+      (err) => {
+        console.error(err);
+        loadingEl.textContent =
+          'PLY load failed: serve this directory over HTTP; file origins often block fetch.';
+      },
+    );
+
+    function onResize() {
+      const w = canvasWrap.clientWidth;
+      const h = Math.max(1, canvasWrap.clientHeight);
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+      renderer.setSize(w, h);
+      updateFrustumLineResolution();
+    }
+    window.addEventListener('resize', onResize);
+
+    function animate() {
+      requestAnimationFrame(animate);
+      controls.update();
+      renderer.render(scene, camera);
+    }
+    animate();
+  </script>
+</body>
+</html>

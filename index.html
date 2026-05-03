@@ -1,0 +1,1342 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="description" content="Open-Ended 3D Instance Segmentation via Pocket Vocabularies">
+  <meta name="keywords"
+    content="Open-Pocket3D, Plug-and-Play Open-Ended 3D Instance Segmentation via Pocket Vocabularies">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>OpenPocket3D</title>
+
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet">
+
+  <link rel="stylesheet" href="./static/css/bulma.min.css">
+  <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="./static/css/index.css">
+  <link rel="icon" href="./static/images/favicon.svg">
+
+  <script defer src="./static/js/fontawesome.all.min.js"></script>
+
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.158.0/build/three.module.js",
+        "three/addons/": "https://unpkg.com/three@0.158.0/examples/jsm/"
+      }
+    }
+  </script>
+</head>
+
+<body>
+
+
+
+  <section class="hero">
+    <div class="hero-body">
+      <div class="container is-max-desktop">
+        <div class="columns is-centered">
+          <div class="column has-text-centered">
+            <h1 class="title is-1 publication-title">OpenPocket3D<br />
+              <p class="title is-3 publication-title">Plug-and-Play Open-Ended 3D Instance Segmentation <br> via Pocket
+                Vocabularies </p>
+            </h1>
+
+            <div class="is-size-5 publication-authors" style="margin-top: 15px;">
+              <span class="author-block">
+                Anonymous Authors
+              </span>
+            </div>
+
+            <div class="is-size-5 publication-authors">
+              <span class="author-block" style="margin-right: 1em;">Anonymous Organization</span>
+            </div>
+
+            <h1 class="title is-4" style="color: #5c5c5c; margin-top: 20px;">Under Review</h1>
+
+            <div class="column has-text-centered">
+              <div class="publication-links">
+                <span class="link-block">
+                  <a href="javascript:void(0);" class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon">
+                      <i class="fas fa-file-pdf"></i>
+                    </span>
+                    <span>Paper</span>
+                  </a>
+                </span>
+                <span class="link-block">
+                  <a href="javascript:void(0);" class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon">
+                      <i class="ai ai-arxiv"></i>
+                    </span>
+                    <span>arXiv</span>
+                  </a>
+                </span>
+                <span class="link-block">
+                  <a href="javascript:void(0);"
+                    class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon">
+                      <i class="fab fa-github"></i>
+                    </span>
+                    <span>Code(Coming Soon)</span>
+                  </a>
+                </span>
+
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="hero teaser">
+    <div class="container is-max-desktop">
+      <div class="hero-body">
+        <img src="static/images/overview.png" class="center"
+          style="width: 80%; max-width: 80%; height: auto; border-radius: 8px; display: block; margin: 0 auto;" />
+        <h2 class="subtitle has-text-centered" style="margin-top: 20px;">
+          <strong>OpenPocket3D</strong> is a plug-and-play framework for extending open-vocabulary 3D instance
+          segmentation models to the open-ended setting.
+        </h2>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-four-fifths">
+          <h2 class="title is-3">Abstract</h2>
+          <div class="content has-text-justified">
+            <p>
+              Open-ended 3D scene understanding requires recognizing object semantics without a predefined 
+              query vocabulary, while open-vocabulary 3D instance segmentation still often assigns semantics 
+              by comparing language-aligned 3D representations with text queries supplied at inference time. 
+              Recent open-ended 3D methods reduce this dependence by generating open-ended classes from 
+              visual inputs, but they can aggregate weakly visible views or query a language model for each 
+              proposal, introducing noisy evidence and extra cost. We propose OpenPocket3D, a modular 
+              framework that converts frozen open-vocabulary 3D instance segmentation backbones into 
+              open-ended predictors without retraining the backbone or training a separate semantic decoder. 
+              For each 3D proposal, OpenPocket3D ranks views by visibility, localizes generated classes 
+              using internal attention maps from a 2D vision-language model, and constructs an instance-wise 
+              pocket vocabulary by retaining classes supported by projected 3D masks. It outputs a prediction 
+              by combining 3D-text semantic similarity from the frozen backbone with geometric consistency 
+              from mask projection. By reusing precomputed 3D masks and instance features, OpenPocket3D 
+              avoids additional point-level dense feature lifting and proposal-wise language-model queries 
+              during open-ended prediction, while remaining compatible with multiple backbones and VLM 
+              sources. Experiments on ScanNet200, ScanNet++, and Replica show that OpenPocket3D achieves 
+              21.4 AP on ScanNet200 and state-of-the-art performance among open-ended methods on most 
+              reported ScanNet200 and ScanNet++ metrics.
+            </p>
+          </div>
+        </div>
+      </div>
+
+  </section>
+
+  <section class="section">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column is-full-width">
+          <h2 class="title is-3">Interactive Demo</h2>
+
+          <div id="interactive-demo-grid"
+               style="display: flex; flex-direction: column; gap: 12px; align-items: stretch; width: 100%; max-width: 100%; min-width: 0; box-sizing: border-box;">
+            <div id="demo-top-row"
+                 style="display: flex; gap: 14px; align-items: flex-start; width: 100%; max-width: 100%; min-width: 0; box-sizing: border-box;">
+            <div id="demo-scene-column"
+                 style="flex: 1; min-width: 0; max-width: 100%; overflow: hidden; display: flex; flex-direction: column; gap: 12px; align-items: stretch;">
+              <div id="ply-container"
+                style="width: 100%; max-width: 100%; height: 500px;
+                       background-color: #f5f5f5; border-radius: 8px; position: relative; overflow: hidden;
+                       display: flex; align-items: center; justify-content: center; border: 1px solid #ddd; box-sizing: border-box;">
+                <div style="position: absolute; top: 15px; right: 15px; z-index: 20; display: flex; gap: 10px;">
+                  <button id="btn-rgb" class="button is-dark is-rounded">RGB</button>
+                  <button id="btn-ov" class="button is-white is-rounded"
+                    style="border: 1px solid #363636; color: #363636;">OV backbone</button>
+                </div>
+                <div id="ply-loading"
+                  style="position: absolute; z-index: 10; font-weight: bold; color: #555; background: rgba(255,255,255,0.8); padding: 10px 20px; border-radius: 8px;">
+                  Loading 3D Scene...
+                </div>
+              </div>
+            </div>
+
+            <div id="instance-panel"
+              style="display: none; flex-shrink: 0; width: 438px; height: 500px;
+                     background: #fafafa; border: 1px solid #ddd; border-radius: 8px;
+                     padding: 12px; box-sizing: border-box; flex-direction: column; gap: 8px;">
+              <div id="instance-btn-list"
+                style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 7px; flex-shrink: 0;">
+              </div>
+              <div id="mini-container"
+                style="flex: 1; border-radius: 6px; overflow: hidden; background: #f0f0f0; min-height: 0;">
+              </div>
+            </div>
+            </div>
+
+            <div id="demo-bottom-evidence-row"
+                 style="display: flex; width: 100%; align-items: stretch; box-sizing: border-box; min-width: 0;">
+              <div id="demo-bottom-pipeline-shell"
+                   style="display: flex; flex: 1; flex-direction: row; align-items: stretch; width: 100%; min-width: 0; box-sizing: border-box;
+                          gap: 4px; padding: 12px 14px; background: #fafafa; border: 1px solid #ddd; border-radius: 8px;">
+                <div id="selected-views-column"
+                     style="display: none; flex-direction: column; align-self: stretch; flex: 0 0 calc((100% - 438px - 14px) / 2); max-width: calc((100% - 438px - 14px) / 2); min-width: 0; box-sizing: border-box;
+                            background: transparent; border: none; border-radius: 0; padding: 0;">
+                  <div id="sv-step1-label"
+                       style="flex-shrink: 0; font-size: 0.9rem; font-weight: 600; color: #2d2d2d; line-height: 1.28;
+                              margin: 0 0 8px 0; padding: 0 4px; width: 100%; box-sizing: border-box; text-align: center;">
+                    <span class="opp3d-step-num" style="font-weight:800;letter-spacing:0.02em;">Step 1</span>: Generated Label Localization
+                  </div>
+                  <div id="sv-step1-workbox"
+                       style="flex: 1; min-height: 0; width: 100%; box-sizing: border-box; display: flex; flex-direction: column;
+                              align-items: stretch; border: 1px solid #d0d0d0; border-radius: 8px; background: #fff; padding: 6px 8px;">
+                  <div id="sv-pre-instance-placeholder" aria-hidden="true"
+                       style="display: none; flex: 1 1 auto; width: 100%; min-height: min(280px, 38vh); box-sizing: border-box;
+                              background: transparent; border: none; border-radius: 0;"></div>
+                  <div id="selected-views-strip"
+                       style="display:none; width: 100%; box-sizing: border-box; pointer-events: auto; flex: 1; min-height: 0;
+                              flex-direction: column;">
+                    <div id="selected-views-header"
+                         style="display: flex; align-items: center; justify-content: flex-end; margin-bottom: 6px; gap: 8px; width: 100%; flex-wrap: wrap; flex-shrink: 0;">
+                      <button type="button" id="btn-sv-mode-proj"
+                        style="padding: 5px 12px; font-size: 0.74rem; font-weight: 600; border-radius: 999px; cursor: pointer; border: 1px solid #363636; line-height: 1.2;">
+                        Selected Views
+                      </button>
+                      <button type="button" id="btn-sv-mode-attn"
+                        style="padding: 5px 12px; font-size: 0.74rem; font-weight: 600; border-radius: 999px; cursor: pointer; border: 1px solid #363636; line-height: 1.2;">
+                        Attention Maps
+                      </button>
+                    </div>
+                    <div id="sv-five-grid-wrap"
+                         style="flex: 1; min-height: 0; width: 100%; display: flex; align-items: center; justify-content: center;">
+                    <div id="sv-five-grid"
+                         style="display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 10px; width: 100%; max-width: 100%; align-items: center;">
+                      <img id="sv-img-0" alt="" decoding="async"
+                        style="display:none; grid-column: 1 / 3; width: 100%; height: auto; max-height: min(320px, 42vh);
+                               object-fit: contain; object-position: center center; border: 4px solid #ff0000; vertical-align: bottom;
+                               border-radius: 6px; background: #fff; box-sizing: border-box; box-shadow: 0 0 0 1px rgba(0,0,0,0.1) inset;" />
+                      <img id="sv-img-1" alt="" decoding="async"
+                        style="display:none; grid-column: 3 / 5; width: 100%; height: auto; max-height: min(320px, 42vh);
+                               object-fit: contain; object-position: center center; border: 4px solid #ff8800; vertical-align: bottom;
+                               border-radius: 6px; background: #fff; box-sizing: border-box; box-shadow: 0 0 0 1px rgba(0,0,0,0.1) inset;" />
+                      <img id="sv-img-2" alt="" decoding="async"
+                        style="display:none; grid-column: 5 / 7; width: 100%; height: auto; max-height: min(320px, 42vh);
+                               object-fit: contain; object-position: center center; border: 4px solid #ffff00; vertical-align: bottom;
+                               border-radius: 6px; background: #fff; box-sizing: border-box; box-shadow: 0 0 0 1px rgba(0,0,0,0.1) inset;" />
+                      <img id="sv-img-3" alt="" decoding="async"
+                        style="display:none; grid-column: 2 / 4; width: 100%; height: auto; max-height: min(320px, 42vh);
+                               object-fit: contain; object-position: center center; border: 4px solid #00ff00; vertical-align: bottom;
+                               border-radius: 6px; background: #fff; box-sizing: border-box; box-shadow: 0 0 0 1px rgba(0,0,0,0.1) inset;" />
+                      <img id="sv-img-4" alt="" decoding="async"
+                        style="display:none; grid-column: 4 / 6; width: 100%; height: auto; max-height: min(320px, 42vh);
+                               object-fit: contain; object-position: center center; border: 4px solid #0088ff; vertical-align: bottom;
+                               border-radius: 6px; background: #fff; box-sizing: border-box; box-shadow: 0 0 0 1px rgba(0,0,0,0.1) inset;" />
+                    </div>
+                    </div>
+                  </div>
+                  </div>
+                </div>
+                <div id="demo-bottom-sv-to-evidence-arrow" aria-hidden="true"
+                     style="display: none; flex: 0 0 26px; align-self: center; align-items: center; justify-content: center; color: #666; flex-shrink: 0;">
+                  <svg width="20" height="20" viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                    <path d="M5 12h12M13 7l7 5-7 5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </div>
+                <div id="method-evidence-column"
+                     style="display: none; flex: 1; min-width: 0; min-height: 0; box-sizing: border-box;
+                            background: transparent; border: none; border-radius: 0; padding: 0;
+                            flex-direction: column; align-items: stretch; justify-content: flex-start;">
+                  <div id="method-evidence-root"
+                       style="font-size: 0.72rem; line-height: 1.35; color: #363636; flex: 1; min-height: 0; width: 100%;
+                              display: flex; flex-direction: column; align-items: stretch; justify-content: flex-start; overflow-x: hidden; overflow-y: hidden;">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <script src="static/resources/data/scene_mask_data.js"></script>
+          <script defer src="static/js/method_evidence_panel.js"></script>
+
+          <script type="module">
+            import * as THREE from 'three';
+            import { PLYLoader } from 'three/addons/loaders/PLYLoader.js';
+            import { addInstantFrustums } from './static/js/frustum_baked.js';
+
+            const container = document.getElementById('ply-container');
+            const scene = new THREE.Scene();
+            scene.background = new THREE.Color(0xf5f5f5);
+
+            const camera = new THREE.PerspectiveCamera(
+              45,
+              Math.max(1, container.clientWidth) / Math.max(1, container.clientHeight),
+              0.1,
+              1000,
+            );
+            camera.position.set(0, 3, 6);
+
+            const renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setPixelRatio(window.devicePixelRatio);
+            renderer.shadowMap.enabled = true;
+            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+            container.appendChild(renderer.domElement);
+
+            function updateMainRendererSize() {
+              if (!camera || !renderer || !container) return;
+              const w = container.clientWidth;
+              const h = Math.max(1, container.clientHeight);
+              if (w < 2 || h < 2) return;
+              camera.aspect = w / h;
+              camera.updateProjectionMatrix();
+              renderer.setSize(w, h);
+            }
+            const plyResizeObserver = new ResizeObserver(() => updateMainRendererSize());
+            plyResizeObserver.observe(container);
+            requestAnimationFrame(() => updateMainRendererSize());
+
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.48);
+            scene.add(ambientLight);
+            const dirLight = new THREE.DirectionalLight(0xffffff, 0.88);
+            dirLight.position.set(0, 120, 0);
+            dirLight.target.position.set(0, 0, 0);
+            dirLight.castShadow = true;
+            dirLight.shadow.mapSize.set(2048, 2048);
+            dirLight.shadow.camera.near = 0.5;
+            dirLight.shadow.camera.far = 500;
+            dirLight.shadow.bias = -0.0002;
+            scene.add(dirLight);
+            scene.add(dirLight.target);
+
+            let sceneGroup = new THREE.Group();
+            scene.add(sceneGroup);
+
+            let frustumGroup = null;
+            let frustumLoadGen = 0;
+            let frustumBakedData = null;
+            let frustumBakedLoadPromise = null;
+
+            async function ensureFrustumBaked() {
+              if (frustumBakedData) return;
+              if (!frustumBakedLoadPromise) {
+                frustumBakedLoadPromise = fetch('static/resources/data/frustums_precomputed.json', {
+                  cache: 'no-store',
+                })
+                  .then(async (r) => {
+                    if (!r.ok) throw new Error(String(r.status));
+                    frustumBakedData = await r.json();
+                  })
+                  .catch((e) => {
+                    frustumBakedLoadPromise = null;
+                    throw e;
+                  });
+              }
+              await frustumBakedLoadPromise;
+            }
+
+            let instanceViewData = null;
+            let instanceViewLoadPromise = null;
+            async function ensureInstanceViewsLoaded() {
+              if (instanceViewData) return;
+              if (!instanceViewLoadPromise) {
+                instanceViewLoadPromise = fetch('static/resources/data/instance_views_precomputed.json', {
+                  cache: 'no-store',
+                })
+                  .then(async (r) => {
+                    if (!r.ok) throw new Error(String(r.status));
+                    instanceViewData = await r.json();
+                  })
+                  .catch((e) => {
+                    instanceViewLoadPromise = null;
+                    throw e;
+                  });
+              }
+              await instanceViewLoadPromise;
+            }
+
+            const PROJ_DATA_BASE = 'static/resources/data/proj';
+            const ATTN_DATA_BASE = 'static/resources/data/attn';
+            const SELECTED_VIEWS_JSON_URL = 'static/resources/data/selected_views.json';
+
+            let selectedViewsImageMode = 'proj';
+            let currentSelectedViewsFinKey = null;
+
+            const SELECTED_VIEW_BORDER_HEX = ['#ff0000', '#ff8800', '#ffff00', '#00ff00', '#0088ff'];
+
+            let selectedViewsByFin = null;
+            let selectedViewsLoadPromise = null;
+            async function ensureSelectedViewsMap() {
+              if (selectedViewsByFin) return;
+              if (!selectedViewsLoadPromise) {
+                selectedViewsLoadPromise = fetch(SELECTED_VIEWS_JSON_URL, { cache: 'no-store' })
+                  .then(async (r) => {
+                    if (!r.ok) throw new Error(String(r.status));
+                    selectedViewsByFin = await r.json();
+                  })
+                  .catch((e) => {
+                    selectedViewsLoadPromise = null;
+                    throw e;
+                  });
+              }
+              await selectedViewsLoadPromise;
+            }
+
+            let selectedViewsShellPinned = false;
+            let svLeftShellHeightPx = 0;
+            let selectedViewsGridMinPx = 0;
+            let svPrimeId = 0;
+
+            function applySelectedViewsGridMinHeight() {
+              const grid = document.getElementById('sv-five-grid');
+              if (!grid || selectedViewsGridMinPx <= 0) return;
+              grid.style.minHeight = `${selectedViewsGridMinPx}px`;
+            }
+
+            function captureSelectedViewsGridHeightIfLarger() {
+              const grid = document.getElementById('sv-five-grid');
+              if (!grid) return;
+              const h = Math.ceil(grid.getBoundingClientRect().height);
+              if (h <= 0) return;
+              if (h > selectedViewsGridMinPx) {
+                selectedViewsGridMinPx = h;
+                grid.style.minHeight = `${selectedViewsGridMinPx}px`;
+              }
+            }
+
+            function scheduleSelectedViewsGridHeightCapture(opts) {
+              const stealthClear = opts && opts.stealthClear;
+              const primeId = opts && 'primeId' in opts ? opts.primeId : null;
+              const onDone = opts && typeof opts.onDone === 'function' ? opts.onDone : null;
+              const imgs = [];
+              for (let k = 0; k < 5; k++) {
+                const im = document.getElementById(`sv-img-${k}`);
+                if (im && im.style.display !== 'none' && im.getAttribute('src')) imgs.push(im);
+              }
+              if (imgs.length === 0) {
+                if (onDone) onDone();
+                return;
+              }
+              let remain = imgs.length;
+              const done = () => {
+                remain -= 1;
+                if (remain > 0) return;
+                requestAnimationFrame(() => {
+                  requestAnimationFrame(() => {
+                    if (primeId != null && primeId !== svPrimeId) {
+                      if (onDone) onDone();
+                      return;
+                    }
+                    captureSelectedViewsGridHeightIfLarger();
+                    if (stealthClear) {
+                      clearSelectedViewImages();
+                      applySelectedViewsGridMinHeight();
+                    }
+                    if (onDone) onDone();
+                  });
+                });
+              };
+              for (const im of imgs) {
+                if (im.complete) done();
+                else {
+                  im.addEventListener('load', done, { once: true });
+                  im.addEventListener('error', done, { once: true });
+                }
+              }
+            }
+
+            function selectedViewsAssetBase() {
+              return selectedViewsImageMode === 'attn' ? ATTN_DATA_BASE : PROJ_DATA_BASE;
+            }
+
+            function updateSelectedViewsModeButtonStyles() {
+              const bp = document.getElementById('btn-sv-mode-proj');
+              const ba = document.getElementById('btn-sv-mode-attn');
+              if (!bp || !ba) return;
+              const on = { background: '#363636', color: '#fff', boxShadow: 'none' };
+              const off = { background: '#fff', color: '#363636', boxShadow: '0 1px 2px rgba(0,0,0,0.06)' };
+              const a = selectedViewsImageMode === 'proj' ? on : off;
+              const b = selectedViewsImageMode === 'attn' ? on : off;
+              Object.assign(bp.style, a);
+              Object.assign(ba.style, b);
+            }
+
+            function refreshSelectedViewsStripSources() {
+              if (!currentSelectedViewsFinKey || !selectedViewsByFin) return;
+              const ids = selectedViewsByFin[currentSelectedViewsFinKey];
+              if (!ids || ids.length < 5) return;
+              const padFin = String(currentSelectedViewsFinKey).padStart(5, '0');
+              const base = selectedViewsAssetBase();
+              for (let k = 0; k < 5; k++) {
+                const im = document.getElementById(`sv-img-${k}`);
+                if (!im || im.style.display === 'none') continue;
+                im.src = `${base}/fin_${padFin}/${ids[k]}.png`;
+              }
+              scheduleSelectedViewsGridHeightCapture({});
+            }
+
+            function resetSelectedViewsImageModeToProj() {
+              selectedViewsImageMode = 'proj';
+              updateSelectedViewsModeButtonStyles();
+            }
+
+            function clearSelectedViewImages() {
+              currentSelectedViewsFinKey = null;
+              for (let k = 0; k < 5; k++) {
+                const im = document.getElementById(`sv-img-${k}`);
+                if (!im) continue;
+                im.removeAttribute('src');
+                im.onerror = null;
+                im.style.display = 'none';
+                im.style.opacity = '';
+              }
+            }
+
+            async function primeSelectedViewsGridMinFromSampleFin() {
+              if (selectedViewsGridMinPx > 0) return;
+              const capturedId = ++svPrimeId;
+              try {
+                await ensureSelectedViewsMap();
+              } catch {
+                return;
+              }
+              if (capturedId !== svPrimeId) return;
+              if (!selectedViewsByFin) return;
+              const keys = Object.keys(selectedViewsByFin).sort((a, b) => Number(a) - Number(b));
+              let sampleKey = null;
+              for (const key of keys) {
+                const arr = selectedViewsByFin[key];
+                if (arr && arr.length >= 5) {
+                  sampleKey = key;
+                  break;
+                }
+              }
+              if (!sampleKey) return;
+              const ids = selectedViewsByFin[sampleKey];
+              const padFin = String(sampleKey).padStart(5, '0');
+              const base = selectedViewsAssetBase();
+              if (capturedId !== svPrimeId) return;
+              for (let k = 0; k < 5; k++) {
+                const im = document.getElementById(`sv-img-${k}`);
+                if (!im) continue;
+                im.style.borderColor = SELECTED_VIEW_BORDER_HEX[k];
+                im.style.display = 'block';
+                im.style.opacity = '0';
+                im.alt = `view ${ids[k]}`;
+                im.onerror = null;
+                im.src = `${base}/fin_${padFin}/${ids[k]}.png`;
+              }
+              await new Promise((resolve) => {
+                scheduleSelectedViewsGridHeightCapture({
+                  stealthClear: true,
+                  primeId: capturedId,
+                  onDone: resolve,
+                });
+              });
+            }
+
+            function setDemoBottomPipelineArrowVisible(visible) {
+              const ar = document.getElementById('demo-bottom-sv-to-evidence-arrow');
+              if (!ar) return;
+              ar.style.display = visible ? 'flex' : 'none';
+            }
+
+            function showSelectedViewsPreInstancePlaceholder() {
+              const strip = document.getElementById('selected-views-strip');
+              const col = document.getElementById('selected-views-column');
+              const ph = document.getElementById('sv-pre-instance-placeholder');
+              if (!strip) return;
+              clearSelectedViewImages();
+              applySelectedViewsGridMinHeight();
+              if (col) {
+                col.style.display = 'flex';
+                col.style.flexDirection = 'column';
+              }
+              if (ph) {
+                ph.style.minHeight = svLeftShellHeightPx > 0 ? `${svLeftShellHeightPx}px` : 'min(280px, 38vh)';
+                ph.style.display = 'flex';
+              }
+              strip.style.display = 'none';
+              setDemoBottomPipelineArrowVisible(true);
+              window.__opp3dSyncMethodColumnHeight?.();
+            }
+            async function revealDemoBottomPlaceholderRow() {
+              const row = document.getElementById('demo-bottom-evidence-row');
+              const strip = document.getElementById('selected-views-strip');
+              const col = document.getElementById('selected-views-column');
+              const ph = document.getElementById('sv-pre-instance-placeholder');
+              const mec = document.getElementById('method-evidence-column');
+              if (!strip || !col) return;
+              selectedViewsShellPinned = true;
+              if (row) {
+                row.style.opacity = '0';
+                row.style.pointerEvents = 'none';
+              }
+              try {
+                col.style.display = 'flex';
+                col.style.flexDirection = 'column';
+                if (mec) {
+                  mec.style.display = 'flex';
+                  mec.style.flexDirection = 'column';
+                }
+                window.__clearOpenPocket3dEvidence?.();
+                if (ph) ph.style.display = 'none';
+                strip.style.display = 'flex';
+                resetSelectedViewsImageModeToProj();
+                clearSelectedViewImages();
+                applySelectedViewsGridMinHeight();
+                try {
+                  await primeSelectedViewsGridMinFromSampleFin();
+                } catch (e) {
+                  console.warn('primeSelectedViewsGridMinFromSampleFin', e);
+                }
+                const h = Math.ceil(col.getBoundingClientRect().height);
+                svLeftShellHeightPx = Math.max(h, 200);
+                if (ph) {
+                  ph.style.minHeight = `${svLeftShellHeightPx}px`;
+                  ph.style.display = 'flex';
+                }
+                strip.style.display = 'none';
+                setDemoBottomPipelineArrowVisible(true);
+                window.__opp3dSyncMethodColumnHeight?.();
+              } finally {
+                if (row) {
+                  row.style.opacity = '';
+                  row.style.pointerEvents = '';
+                }
+              }
+            }
+
+            function hideSelectedViewsStrip() {
+              const strip = document.getElementById('selected-views-strip');
+              const col = document.getElementById('selected-views-column');
+              if (!strip) return;
+              if (selectedViewsShellPinned) {
+                showSelectedViewsPreInstancePlaceholder();
+              } else {
+                clearSelectedViewImages();
+                applySelectedViewsGridMinHeight();
+                strip.style.display = 'none';
+                setDemoBottomPipelineArrowVisible(false);
+                const ph = document.getElementById('sv-pre-instance-placeholder');
+                if (ph) ph.style.display = 'none';
+                if (col) col.style.display = 'none';
+              }
+            }
+
+            function showSelectedViewsStrip(fin) {
+              const strip = document.getElementById('selected-views-strip');
+              const col = document.getElementById('selected-views-column');
+              const ph = document.getElementById('sv-pre-instance-placeholder');
+              if (!strip) return;
+              const finKey = String(fin);
+              const ids = selectedViewsByFin && selectedViewsByFin[finKey];
+              if (!ids || ids.length < 5) {
+                clearSelectedViewImages();
+                if (selectedViewsShellPinned) {
+                  showSelectedViewsPreInstancePlaceholder();
+                } else {
+                  strip.style.display = 'none';
+                  if (ph) ph.style.display = 'none';
+                  if (col) col.style.display = 'none';
+                  setDemoBottomPipelineArrowVisible(false);
+                }
+                return;
+              }
+              if (ph) ph.style.display = 'none';
+              const padFin = String(fin).padStart(5, '0');
+              const base = selectedViewsAssetBase();
+              if (col) {
+                col.style.display = 'flex';
+                col.style.flexDirection = 'column';
+              }
+              svPrimeId += 1;
+              clearSelectedViewImages();
+              currentSelectedViewsFinKey = finKey;
+              let anyShown = false;
+              for (let k = 0; k < 5; k++) {
+                const im = document.getElementById(`sv-img-${k}`);
+                if (!im) continue;
+                im.style.borderColor = SELECTED_VIEW_BORDER_HEX[k];
+                im.style.display = 'block';
+                im.style.opacity = '';
+                im.alt = `view ${ids[k]}`;
+                im.onerror = function onSvErr() {
+                  this.style.display = 'none';
+                  this.onerror = null;
+                };
+                im.src = `${base}/fin_${padFin}/${ids[k]}.png`;
+                anyShown = true;
+              }
+              strip.style.display = 'flex';
+              if (!anyShown && !selectedViewsShellPinned) {
+                strip.style.display = 'none';
+                if (ph) ph.style.display = 'none';
+                if (col) col.style.display = 'none';
+                setDemoBottomPipelineArrowVisible(false);
+              } else if (!anyShown && selectedViewsShellPinned) {
+                showSelectedViewsPreInstancePlaceholder();
+              }
+              if (anyShown) {
+                scheduleSelectedViewsGridHeightCapture({});
+                setDemoBottomPipelineArrowVisible(true);
+              }
+            }
+
+            (function wireSelectedViewsSourceToggle() {
+              const bp = document.getElementById('btn-sv-mode-proj');
+              const ba = document.getElementById('btn-sv-mode-attn');
+              if (!bp || !ba) return;
+              bp.addEventListener('click', () => {
+                selectedViewsImageMode = 'proj';
+                updateSelectedViewsModeButtonStyles();
+                refreshSelectedViewsStripSources();
+              });
+              ba.addEventListener('click', () => {
+                selectedViewsImageMode = 'attn';
+                updateSelectedViewsModeButtonStyles();
+                refreshSelectedViewsStripSources();
+              });
+              updateSelectedViewsModeButtonStyles();
+            })();
+
+            let instanceViewAnimId = 0;
+            const lastInstanceLookAt = new THREE.Vector3(0, 0, 0);
+            const _tweenLa = new THREE.Vector3();
+            function tweenInstanceViewFromBaked(ent, durationMs = 780) {
+              instanceViewAnimId += 1;
+              const anim = instanceViewAnimId;
+              const la = ent.lookAt || [0, 0, 0];
+              const endLa = new THREE.Vector3(la[0], la[1], la[2]);
+              const cx = typeof ent.camX === 'number' ? ent.camX : 0;
+              const endRz = ent.sceneRotZ;
+              const startRz = sceneGroup.rotation.z;
+              const startX = camera.position.x;
+              const startY = camera.position.y;
+              const startZ = camera.position.z;
+              const startLa = lastInstanceLookAt.clone();
+              let dz = endRz - startRz;
+              while (dz > Math.PI) dz -= 2 * Math.PI;
+              while (dz < -Math.PI) dz += 2 * Math.PI;
+              const t0 = performance.now();
+              const ease = (t) => t * t * (3 - 2 * t);
+              function tick(now) {
+                if (anim !== instanceViewAnimId) return;
+                const u = Math.min(1, (now - t0) / durationMs);
+                const e = ease(u);
+                sceneGroup.rotation.z = startRz + dz * e;
+                camera.position.set(
+                  startX + (cx - startX) * e,
+                  startY + (ent.camY - startY) * e,
+                  startZ + (ent.camZ - startZ) * e,
+                );
+                _tweenLa.lerpVectors(startLa, endLa, e);
+                camera.up.set(0, 1, 0);
+                camera.lookAt(_tweenLa);
+                lastInstanceLookAt.copy(_tweenLa);
+                if (u < 1) requestAnimationFrame(tick);
+              }
+              requestAnimationFrame(tick);
+            }
+
+            function disposeFrustumGroup() {
+              if (!frustumGroup) return;
+              frustumGroup.traverse((obj) => {
+                if (obj.geometry) obj.geometry.dispose();
+                if (obj.material) {
+                  const mats = Array.isArray(obj.material) ? obj.material : [obj.material];
+                  mats.forEach((m) => {
+                    if (m.map) m.map.dispose();
+                    m.dispose();
+                  });
+                }
+              });
+              sceneGroup.remove(frustumGroup);
+              frustumGroup = null;
+            }
+
+            const miniContainer = document.getElementById('mini-container');
+            const miniScene    = miniContainer ? new THREE.Scene() : null;
+            let   miniGroup    = new THREE.Group();
+            let   miniCamera   = null;
+            let   miniRenderer = null;
+            let   miniLoaded   = false;
+
+            if (miniScene && miniContainer) {
+              miniScene.background = new THREE.Color(0xf0f0f0);
+              miniScene.add(miniGroup);
+              miniCamera = new THREE.PerspectiveCamera(45, 1, 0.01, 500);
+              miniCamera.position.set(0, 2, 3);
+              miniRenderer = new THREE.WebGLRenderer({ antialias: true });
+              miniRenderer.setPixelRatio(window.devicePixelRatio);
+              miniContainer.appendChild(miniRenderer.domElement);
+            }
+
+            let loadedConfigured = false;
+            let isRotating = true;
+            let normalCamY = 3, normalCamZ = 6;
+
+            const loader = new PLYLoader();
+            loader.load('static/resources/scene/scene0011_00_vh_clean_2.ply', async function (geometry) {
+              geometry.computeVertexNormals();
+
+              const material = new THREE.PointsMaterial({
+                size: 0.04,
+                vertexColors: geometry.hasAttribute('color'),
+                color: geometry.hasAttribute('color') ? 0xffffff : 0xcccccc,
+              });
+
+              const mesh = new THREE.Points(geometry, material);
+              mesh.castShadow = true;
+
+              geometry.computeBoundingBox();
+              const center = new THREE.Vector3();
+              geometry.boundingBox.getCenter(center);
+              mesh.position.sub(center);
+              sceneGroup.add(mesh);
+              sceneGroup.rotation.x = -Math.PI / 2;
+
+              const size = new THREE.Vector3();
+              geometry.boundingBox.getSize(size);
+              const maxDim = Math.max(size.x, size.y, size.z);
+              sceneGroup.position.y += maxDim * 0.15;
+
+              sceneGroup.updateMatrixWorld(true);
+              const sceneBounds = new THREE.Box3().setFromObject(sceneGroup);
+              const groundSize = maxDim * 10;
+              const ground = new THREE.Mesh(
+                new THREE.PlaneGeometry(groundSize, groundSize),
+                new THREE.ShadowMaterial({ opacity: 0.22 }),
+              );
+              ground.rotation.x = -Math.PI / 2;
+              ground.position.set(
+                (sceneBounds.min.x + sceneBounds.max.x) * 0.5,
+                sceneBounds.min.y - maxDim * 0.025,
+                (sceneBounds.min.z + sceneBounds.max.z) * 0.5,
+              );
+              ground.receiveShadow = true;
+              ground.name = 'plyShadowGround';
+              scene.add(ground);
+
+              const sh = maxDim * 6;
+              dirLight.shadow.camera.left = -sh;
+              dirLight.shadow.camera.right = sh;
+              dirLight.shadow.camera.top = sh;
+              dirLight.shadow.camera.bottom = -sh;
+              dirLight.shadow.camera.near = 0.5;
+              dirLight.shadow.camera.far = maxDim * 40;
+              dirLight.position.set(0, maxDim * 28, 0);
+              dirLight.target.position.set(0, 0, 0);
+              dirLight.target.updateMatrixWorld();
+              dirLight.shadow.camera.updateProjectionMatrix();
+
+              const FRUSTUM_COLORS = [0xff0000, 0xff8800, 0xffff00, 0x00ff00, 0x0088ff];
+
+              async function showFrustumsForFin(fin) {
+                const gen = ++frustumLoadGen;
+                disposeFrustumGroup();
+                try {
+                  await ensureFrustumBaked();
+                } catch (e) {
+                  console.warn('frustums_precomputed.json load failed', e);
+                  return;
+                }
+                if (gen !== frustumLoadGen) return;
+                if (!frustumBakedData[String(fin)]) return;
+                const grp = new THREE.Group();
+                grp.name = 'frustumViews';
+                const FRUSTUM_LINE_WIDTH_WORLD = 0.015;
+                addInstantFrustums(
+                  grp,
+                  fin,
+                  frustumBakedData,
+                  FRUSTUM_COLORS,
+                  new THREE.Vector2(renderer.domElement.width, renderer.domElement.height),
+                  FRUSTUM_LINE_WIDTH_WORLD,
+                );
+                if (gen !== frustumLoadGen) return;
+                sceneGroup.add(grp);
+                frustumGroup = grp;
+              }
+
+              ensureFrustumBaked().catch(() => {});
+              ensureInstanceViewsLoaded().catch(() => {});
+              ensureSelectedViewsMap().catch(() => {});
+
+              normalCamY = maxDim * 0.5;
+              normalCamZ = maxDim * 0.85;
+              camera.position.set(0, normalCamY, normalCamZ);
+              camera.lookAt(0, 0, 0);
+              lastInstanceLookAt.set(0, 0, 0);
+
+              const loadingText = document.getElementById('ply-loading');
+              if (loadingText) loadingText.style.display = 'none';
+              loadedConfigured = true;
+              void revealDemoBottomPlaceholderRow().catch((e) => console.warn('revealDemoBottomPlaceholderRow', e));
+
+              const originalColors = new Float32Array(geometry.attributes.color.array);
+              let ovColors = null;
+
+              const indexData  = window.SCENE_INDEX_DATA;
+              const insData    = window.SCENE_INS_DATA;
+              const matches    = indexData.matches;
+              const mask_list  = insData.ins_merged_eval || insData.ins_final_ov;
+              const mask_indices = insData.open3dis_eval_mask_index;
+              const n_points   = insData.n_points;
+
+              const KEEP_INS_IDX = new Set([3, 60, 127, 49, 84, 77, 42, 113, 143, 160, 210, 211]);
+
+              function hslColor(h, s, l) {
+                const hh = ((h % 360) + 360) % 360;
+                return new THREE.Color(`hsl(${Math.round(hh)}, ${s}%, ${l}%)`);
+              }
+
+              const primaryMatches = matches
+                .filter((m) => KEEP_INS_IDX.has(m.open3dis_final_ins_index))
+                .sort((a, b) => a.open3dis_eval_mask_index - b.open3dis_eval_mask_index);
+              const secondaryMatches = matches.filter(
+                (m) => !KEEP_INS_IDX.has(m.open3dis_final_ins_index)
+              );
+
+              const primaryHues = [];
+              for (let k = 0; k < 12; k++) primaryHues.push(k * 30);
+
+              const secondarySlots = [];
+              for (let k = 0; k < 12; k++) secondarySlots.push({ h: 15 + k * 30, s: 72, l: 49 });
+              for (let k = 0; k < 9; k++) secondarySlots.push({ h: (22 + k * 30) % 360, s: 66, l: 58 });
+
+              const maskPalette = {};
+              primaryMatches.forEach((m, i) => {
+                maskPalette[m.open3dis_eval_mask_index] = hslColor(primaryHues[i], 88, 54);
+              });
+              secondaryMatches.forEach((m, i) => {
+                const sl = secondarySlots[i];
+                maskPalette[m.open3dis_eval_mask_index] = hslColor(sl.h, sl.s, sl.l);
+              });
+
+              console.assert(primaryMatches.length === 12, 'palette: expected 12 primary matches');
+              console.assert(secondaryMatches.length === 21, 'palette: expected 21 secondary matches');
+              console.assert(
+                Object.keys(maskPalette).length === matches.length,
+                'palette: one color per match'
+              );
+
+              function paintMask(colors, mask, color) {
+                if (mask.counts !== undefined) {
+                  const c = mask.counts;
+                  for (let i = 0; i < c.length; i += 2) {
+                    const end = c[i] + c[i + 1];
+                    for (let p = c[i]; p < end; p++) {
+                      if (p * 3 + 2 < colors.length) {
+                        colors[p * 3] = color.r; colors[p * 3 + 1] = color.g; colors[p * 3 + 2] = color.b;
+                      }
+                    }
+                  }
+                } else if (mask.length === n_points) {
+                  for (let p = 0; p < n_points; p++)
+                    if (mask[p]) { colors[p * 3] = color.r; colors[p * 3 + 1] = color.g; colors[p * 3 + 2] = color.b; }
+                } else {
+                  for (let p = 0; p < mask.length; p++) {
+                    const i = mask[p]; colors[i * 3] = color.r; colors[i * 3 + 1] = color.g; colors[i * 3 + 2] = color.b;
+                  }
+                }
+              }
+
+              function buildPainted(mask) {
+                const painted = new Uint8Array(n_points);
+                if (mask.counts !== undefined) {
+                  const c = mask.counts;
+                  for (let i = 0; i < c.length; i += 2) {
+                    const end = c[i] + c[i + 1];
+                    for (let p = c[i]; p < end; p++) if (p < n_points) painted[p] = 1;
+                  }
+                } else if (mask.length === n_points) {
+                  for (let p = 0; p < n_points; p++) if (mask[p]) painted[p] = 1;
+                } else {
+                  for (let p = 0; p < mask.length; p++) painted[mask[p]] = 1;
+                }
+                return painted;
+              }
+
+              function applyFade(colors, painted, fade) {
+                for (let p = 0; p < n_points; p++) {
+                  if (!painted[p]) {
+                    colors[p * 3]     += (1 - colors[p * 3])     * fade;
+                    colors[p * 3 + 1] += (1 - colors[p * 3 + 1]) * fade;
+                    colors[p * 3 + 2] += (1 - colors[p * 3 + 2]) * fade;
+                  }
+                }
+              }
+
+              function computeOvColors() {
+                const c = new Float32Array(originalColors);
+                const allPainted = new Uint8Array(n_points);
+                const fridgeMatch = primaryMatches.find((m) => m.open3dis_final_ins_index === 3);
+                const primaryRest = primaryMatches.filter((m) => m.open3dis_final_ins_index !== 3);
+                const ovPaintOrder = fridgeMatch
+                  ? [...secondaryMatches, ...primaryRest, fridgeMatch]
+                  : [...secondaryMatches, ...primaryMatches];
+                ovPaintOrder.forEach((match) => {
+                  const ai = mask_indices.indexOf(match.open3dis_eval_mask_index);
+                  if (ai === -1) return;
+                  const mask = mask_list[ai];
+                  paintMask(c, mask, maskPalette[match.open3dis_eval_mask_index]);
+                  const p = buildPainted(mask);
+                  for (let j = 0; j < n_points; j++) if (p[j]) allPainted[j] = 1;
+                });
+                applyFade(c, allPainted, 0.3);
+                return c;
+              }
+
+              const instanceCache = {};
+              function computeInstanceColors(matchIdx) {
+                if (instanceCache[matchIdx]) return instanceCache[matchIdx];
+                const match = matches[matchIdx];
+                const ai = mask_indices.indexOf(match.open3dis_eval_mask_index);
+                if (ai === -1) return null;
+                const mask = mask_list[ai];
+                const c = new Float32Array(originalColors);
+                paintMask(c, mask, maskPalette[match.open3dis_eval_mask_index]);
+                applyFade(c, buildPainted(mask), 0.3);
+                instanceCache[matchIdx] = c;
+                return c;
+              }
+
+              function setTopActive(activeId) {
+                ['btn-rgb', 'btn-ov'].forEach(id => {
+                  const b = document.getElementById(id);
+                  if (id === activeId) {
+                    b.className = 'button is-dark is-rounded'; b.style.border = 'none'; b.style.color = '';
+                  } else {
+                    b.className = 'button is-white is-rounded';
+                    b.style.border = '1px solid #363636'; b.style.color = '#363636';
+                  }
+                });
+                document.querySelectorAll('.inst-btn').forEach(b => {
+                  b.style.fontWeight = '400'; b.style.background = '#fff'; b.style.outline = 'none';
+                });
+              }
+
+              function restoreCamera() {
+                lastInstanceLookAt.set(0, 0, 0);
+                camera.position.set(0, normalCamY, normalCamZ);
+                camera.lookAt(0, 0, 0);
+              }
+
+              document.getElementById('btn-rgb').addEventListener('click', () => {
+                const fromInstanceView = !isRotating;
+                frustumLoadGen++;
+                instanceViewAnimId++;
+                setTopActive('btn-rgb');
+                if (fromInstanceView) sceneGroup.rotation.z = 0;
+                isRotating = true;
+                hideSelectedViewsStrip();
+                resetSelectedViewsImageModeToProj();
+                window.__clearOpenPocket3dEvidence?.();
+                restoreCamera();
+                disposeFrustumGroup();
+                geometry.attributes.color.array.set(originalColors);
+                geometry.attributes.color.needsUpdate = true;
+                miniLoaded = false;
+                while (miniGroup.children.length) miniGroup.remove(miniGroup.children[0]);
+              });
+
+              document.getElementById('btn-ov').addEventListener('click', () => {
+                const fromInstanceView = !isRotating;
+                frustumLoadGen++;
+                instanceViewAnimId++;
+                setTopActive('btn-ov');
+                if (fromInstanceView) sceneGroup.rotation.z = 0;
+                isRotating = true;
+                hideSelectedViewsStrip();
+                resetSelectedViewsImageModeToProj();
+                window.__clearOpenPocket3dEvidence?.();
+                restoreCamera();
+                disposeFrustumGroup();
+                if (!ovColors) ovColors = computeOvColors();
+                geometry.attributes.color.array.set(ovColors);
+                geometry.attributes.color.needsUpdate = true;
+                miniLoaded = false;
+                while (miniGroup.children.length) miniGroup.remove(miniGroup.children[0]);
+              });
+
+              const instPanel   = document.getElementById('instance-panel');
+              const instBtnList = document.getElementById('instance-btn-list');
+              if (instPanel) instPanel.style.display = 'flex';
+
+              matches.forEach((match, i) => {
+                if (!KEEP_INS_IDX.has(match.open3dis_final_ins_index)) return;
+                const color = maskPalette[match.open3dis_eval_mask_index];
+                const hex   = '#' + color.getHexString();
+                const label = (match.oe && match.oe.openpocket3d_result_label) || `inst_${i}`;
+
+                const btn = document.createElement('button');
+                btn.className = 'inst-btn';
+                btn.style.cssText = [
+                  'width:100%', 'box-sizing:border-box', 'text-align:left', 'padding:7px 10px',
+                  'border-radius:6px', 'cursor:pointer', 'font-size:0.78rem',
+                  'line-height:1.25', 'min-height:34px',
+                  'background:#fff', `border-left:4px solid ${hex}`, 'border-top:none',
+                  'border-right:none', 'border-bottom:none',
+                  'box-shadow:0 1px 3px rgba(0,0,0,0.08)',
+                  'display:flex', 'align-items:center', 'justify-content:flex-start', 'gap:8px',
+                  'transition:background 0.12s', 'font-weight:400',
+                ].join(';');
+
+                const dot = document.createElement('span');
+                dot.style.cssText = `display:inline-block;width:8px;height:8px;border-radius:50%;background:${hex};flex-shrink:0;`;
+                const txt = document.createElement('span');
+                txt.textContent = label;
+                txt.style.whiteSpace = 'nowrap';
+                btn.appendChild(dot);
+                btn.appendChild(txt);
+
+                btn.addEventListener('mouseenter', () => { if (btn.style.fontWeight !== '700') btn.style.background = '#f0f0f0'; });
+                btn.addEventListener('mouseleave', () => { if (btn.style.fontWeight !== '700') btn.style.background = '#fff'; });
+
+                btn.addEventListener('click', async () => {
+                  document.querySelectorAll('.inst-btn').forEach(b => {
+                    b.style.fontWeight = '400'; b.style.background = '#fff'; b.style.outline = 'none';
+                  });
+                  btn.style.fontWeight = '700';
+                  btn.style.outline    = `2px solid ${hex}`;
+
+                  ['btn-rgb', 'btn-ov'].forEach(id => {
+                    const b = document.getElementById(id);
+                    b.className = 'button is-white is-rounded';
+                    b.style.border = '1px solid #363636'; b.style.color = '#363636';
+                  });
+
+                  isRotating = false;
+
+                  await showFrustumsForFin(match.open3dis_final_ins_index);
+
+                  try {
+                    await ensureSelectedViewsMap();
+                  } catch (e) {
+                    console.warn('selected_views.json load failed', e);
+                  }
+                  showSelectedViewsStrip(match.open3dis_final_ins_index);
+
+                  try {
+                    await ensureInstanceViewsLoaded();
+                    const finKey = String(match.open3dis_final_ins_index);
+                    const ent = instanceViewData[finKey];
+                    if (ent && typeof ent.sceneRotZ === 'number' && typeof ent.camY === 'number' && typeof ent.camZ === 'number') {
+                      tweenInstanceViewFromBaked(ent, 780);
+                    } else {
+                      console.warn('instance view bake missing for fin', match.open3dis_final_ins_index);
+                      sceneGroup.rotation.z = -Math.PI / 2;
+                      lastInstanceLookAt.set(0, 0, 0);
+                      camera.position.set(0, normalCamY, normalCamZ);
+                      camera.lookAt(0, 0, 0);
+                    }
+                  } catch (e) {
+                    console.warn('instance_views_precomputed.json failed', e);
+                    sceneGroup.rotation.z = -Math.PI / 2;
+                    lastInstanceLookAt.set(0, 0, 0);
+                    camera.position.set(0, normalCamY, normalCamZ);
+                    camera.lookAt(0, 0, 0);
+                  }
+
+                  const c = computeInstanceColors(i);
+                  if (c) {
+                    geometry.attributes.color.array.set(c);
+                    geometry.attributes.color.needsUpdate = true;
+                  }
+
+                  const ai = mask_indices.indexOf(match.open3dis_eval_mask_index);
+                  if (ai !== -1 && miniScene) {
+                    const mask = mask_list[ai];
+                    const posArr = geometry.attributes.position.array;
+
+                    let verts = [];
+                    if (mask.counts !== undefined) {
+                      const cc = mask.counts;
+                      for (let k = 0; k < cc.length; k += 2)
+                        for (let p = cc[k]; p < cc[k] + cc[k+1]; p++) verts.push(p);
+                    } else if (mask.length === n_points) {
+                      for (let p = 0; p < n_points; p++) if (mask[p]) verts.push(p);
+                    } else {
+                      for (let p = 0; p < mask.length; p++) verts.push(mask[p]);
+                    }
+
+                    if (verts.length > 50) {
+                      let minX=Infinity, minY=Infinity, minZ=Infinity;
+                      let maxX=-Infinity, maxY=-Infinity, maxZ=-Infinity;
+                      for (let i=0; i<verts.length; i++) {
+                        let idx = verts[i]*3;
+                        let x = posArr[idx], y = posArr[idx+1], z = posArr[idx+2];
+                        if (x < minX) minX = x; if (x > maxX) maxX = x;
+                        if (y < minY) minY = y; if (y > maxY) maxY = y;
+                        if (z < minZ) minZ = z; if (z > maxZ) maxZ = z;
+                      }
+                      const maxDim = Math.max(maxX-minX, maxY-minY, maxZ-minZ);
+                      if (maxDim > 0) {
+                        const binSize = maxDim / 30;
+                        const voxelMap = new Map();
+                        const voxelPoints = new Map();
+                        for (let i=0; i<verts.length; i++) {
+                          let idx = verts[i]*3;
+                          let gx = Math.floor((posArr[idx]-minX)/binSize);
+                          let gy = Math.floor((posArr[idx+1]-minY)/binSize);
+                          let gz = Math.floor((posArr[idx+2]-minZ)/binSize);
+                          let key = `${gx},${gy},${gz}`;
+                          if (!voxelPoints.has(key)) {
+                            voxelPoints.set(key, []);
+                            voxelMap.set(key, {gx, gy, gz});
+                          }
+                          voxelPoints.get(key).push(verts[i]);
+                        }
+                        const visited = new Set();
+                        let maxPoints = 0;
+                        let bestClusterKeys = [];
+                        const voxelKeys = Array.from(voxelMap.keys());
+                        for (let i=0; i<voxelKeys.length; i++) {
+                          const startKey = voxelKeys[i];
+                          if (visited.has(startKey)) continue;
+                          const cluster = [];
+                          const queue = [startKey];
+                          visited.add(startKey);
+                          let head = 0;
+                          while (head < queue.length) {
+                            const currKey = queue[head++];
+                            cluster.push(currKey);
+                            const {gx, gy, gz} = voxelMap.get(currKey);
+                            for (let dx=-2; dx<=2; dx++) {
+                              for (let dy=-2; dy<=2; dy++) {
+                                for (let dz=-2; dz<=2; dz++) {
+                                  if (dx===0 && dy===0 && dz===0) continue;
+                                  const nKey = `${gx+dx},${gy+dy},${gz+dz}`;
+                                  if (voxelMap.has(nKey) && !visited.has(nKey)) {
+                                    visited.add(nKey);
+                                    queue.push(nKey);
+                                  }
+                                }
+                              }
+                            }
+                          }
+                          let pointCount = 0;
+                          for (const k of cluster) pointCount += voxelPoints.get(k).length;
+                          if (pointCount > maxPoints) {
+                            maxPoints = pointCount;
+                            bestClusterKeys = cluster;
+                          }
+                        }
+                        if (bestClusterKeys.length > 0) {
+                          const newVerts = [];
+                          for (const k of bestClusterKeys) {
+                            const pts = voxelPoints.get(k);
+                            for (let i=0; i<pts.length; i++) newVerts.push(pts[i]);
+                          }
+                          verts = newVerts;
+                        }
+                      }
+                    }
+
+                    const mPos = new Float32Array(verts.length * 3);
+                    const mCol = new Float32Array(verts.length * 3);
+                    verts.forEach((v, j) => {
+                      mPos[j*3]   = posArr[v*3];   mPos[j*3+1] = posArr[v*3+1]; mPos[j*3+2] = posArr[v*3+2];
+                      mCol[j*3]   = originalColors[v*3]; mCol[j*3+1] = originalColors[v*3+1]; mCol[j*3+2] = originalColors[v*3+2];
+                    });
+
+                    const mGeo = new THREE.BufferGeometry();
+                    mGeo.setAttribute('position', new THREE.BufferAttribute(mPos, 3));
+                    mGeo.setAttribute('color',    new THREE.BufferAttribute(mCol, 3));
+
+                    mGeo.computeBoundingBox();
+                    const mCenter = new THREE.Vector3();
+                    mGeo.boundingBox.getCenter(mCenter);
+
+                    const mMesh = new THREE.Points(mGeo, new THREE.PointsMaterial({ size: 0.04, vertexColors: true }));
+                    mMesh.position.sub(mCenter);
+
+                    while (miniGroup.children.length) miniGroup.remove(miniGroup.children[0]);
+                    miniGroup.add(mMesh);
+                    miniGroup.rotation.x = -Math.PI / 2;
+                    miniGroup.rotation.z = 0;
+
+                    mGeo.computeBoundingSphere();
+                    const r = mGeo.boundingSphere.radius || 1;
+                    miniCamera.position.set(0, r * 1.5, r * 2.2);
+                    miniCamera.lookAt(0, 0, 0);
+                    miniLoaded = true;
+                  }
+                  window.__openPocket3dEvidence?.(match);
+                });
+
+                instBtnList.appendChild(btn);
+              });
+
+            }, undefined, function (error) {
+              console.error(error);
+              const lt = document.getElementById('ply-loading');
+              if (lt) lt.innerText = 'Failed to load 3D Scene.';
+            });
+
+            function animate() {
+              requestAnimationFrame(animate);
+              if (loadedConfigured && isRotating) sceneGroup.rotation.z -= 0.005;
+              renderer.render(scene, camera);
+
+              if (miniRenderer && miniScene && miniCamera) {
+                const w = miniContainer.clientWidth;
+                const h = miniContainer.clientHeight;
+                if (w > 0 && h > 0) {
+                  miniRenderer.setSize(w, h);
+                  miniCamera.aspect = w / h;
+                  miniCamera.updateProjectionMatrix();
+                }
+                if (miniLoaded) miniGroup.rotation.z -= 0.012;
+                miniRenderer.render(miniScene, miniCamera);
+              }
+            }
+            animate();
+
+            window.addEventListener('resize', () => {
+              updateMainRendererSize();
+            });
+          </script>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container is-max-desktop">
+
+      <h2 class="title is-3">BibTeX</h2>
+      <pre><code>
+</code></pre>
+
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="columns is-centered">
+        <div class="column is-8">
+          <div class="content">
+            <p>
+              This website is licensed under a <a rel="license"
+                href="http://creativecommons.org/licenses/by-sa/4.0/">Creative
+                Commons Attribution-ShareAlike 4.0 International License</a>.
+            </p>
+            <p>
+              This website borrows the template from
+              <a href="https://github.com/nerfies/nerfies.github.io" style="color: #29b6f6;">Nerfies</a>
+              and
+              <a href="https://hypernerf.github.io/" style="color: #29b6f6;">HyperNeRF</a>.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+</body>
+
+</html>
