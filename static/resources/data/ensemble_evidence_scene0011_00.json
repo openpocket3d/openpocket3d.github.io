@@ -1,0 +1,2725 @@
+{
+  "scene": "scene0011_00",
+  "instances": {
+    "3": {
+      "inst": 20,
+      "views": [
+        "00070",
+        "00046",
+        "00072",
+        "00044",
+        "00054"
+      ],
+      "tagsByView": [
+        {
+          "key": "v1",
+          "viewId": "00070",
+          "tags": [
+            "refrigerator",
+            "window",
+            "cabinet",
+            "countertop",
+            "door",
+            "counter",
+            "fridge",
+            "handle",
+            "sink"
+          ],
+          "original": [
+            "refrigerator",
+            "window",
+            "cabinet",
+            "countertop"
+          ],
+          "support": [
+            "fridge"
+          ]
+        },
+        {
+          "key": "v2",
+          "viewId": "00046",
+          "tags": [
+            "refrigerator",
+            "window",
+            "sink",
+            "cabinet",
+            "handle",
+            "fridge",
+            "stove",
+            "countertop",
+            "door",
+            "cabinets",
+            "counter",
+            "wall outlet"
+          ],
+          "original": [
+            "refrigerator",
+            "sink",
+            "window",
+            "cabinet"
+          ],
+          "support": [
+            "fridge"
+          ]
+        },
+        {
+          "key": "v3",
+          "viewId": "00072",
+          "tags": [
+            "refrigerator",
+            "window",
+            "sink",
+            "cabinet",
+            "door",
+            "fridge",
+            "cabinets",
+            "building",
+            "bicycle",
+            "plant",
+            "wall outlet",
+            "counter",
+            "countertop",
+            "stove"
+          ],
+          "original": [
+            "refrigerator",
+            "door",
+            "sink",
+            "window",
+            "cabinet"
+          ],
+          "support": [
+            "fridge"
+          ]
+        },
+        {
+          "key": "v4",
+          "viewId": "00044",
+          "tags": [
+            "refrigerator",
+            "window",
+            "sink",
+            "cabinet",
+            "countertop",
+            "door",
+            "fridge",
+            "stove",
+            "cabinets",
+            "wall outlet",
+            "handle"
+          ],
+          "original": [
+            "refrigerator",
+            "sink",
+            "window",
+            "cabinet",
+            "countertop"
+          ],
+          "support": [
+            "fridge"
+          ]
+        },
+        {
+          "key": "v5",
+          "viewId": "00054",
+          "tags": [
+            "refrigerator",
+            "window",
+            "sink",
+            "countertop",
+            "cabinets",
+            "wall outlet",
+            "building",
+            "bicycle",
+            "cabinet",
+            "plant",
+            "stove",
+            "fridge",
+            "door",
+            "counter"
+          ],
+          "original": [
+            "refrigerator",
+            "sink",
+            "window",
+            "countertop",
+            "cabinets"
+          ],
+          "support": [
+            "fridge"
+          ]
+        }
+      ],
+      "candidates": [
+        {
+          "label": "refrigerator",
+          "vw": 0.7676,
+          "point": 0.6752,
+          "fused": 0.8887
+        },
+        {
+          "label": "fridge",
+          "vw": 0.1796,
+          "point": 0.7198,
+          "fused": 0.6936
+        },
+        {
+          "label": "handle",
+          "vw": 0.0003,
+          "point": 0.6867,
+          "fused": 0.5176
+        },
+        {
+          "label": "stove",
+          "vw": 0.001,
+          "point": 0.611,
+          "fused": 0.3288
+        },
+        {
+          "label": "door",
+          "vw": 0.0022,
+          "point": 0.5417,
+          "fused": 0.1562
+        },
+        {
+          "label": "bicycle",
+          "vw": 0.0,
+          "point": 0.5251,
+          "fused": 0.1138
+        },
+        {
+          "label": "sink",
+          "vw": 0.0002,
+          "point": 0.499,
+          "fused": 0.0486
+        },
+        {
+          "label": "window",
+          "vw": 0.0001,
+          "point": 0.4911,
+          "fused": 0.0289
+        },
+        {
+          "label": "plant",
+          "vw": 0.0,
+          "point": 0.4796,
+          "fused": 0.0
+        }
+      ],
+      "top1": {
+        "label": "refrigerator",
+        "fused": 0.8887
+      }
+    },
+    "42": {
+      "inst": 198,
+      "views": [
+        "00314",
+        "00312",
+        "00316",
+        "00378",
+        "00380"
+      ],
+      "tagsByView": [
+        {
+          "key": "v1",
+          "viewId": "00314",
+          "tags": [
+            "table",
+            "chair",
+            "floor",
+            "window",
+            "chairs",
+            "counter",
+            "cabinets",
+            "microwave",
+            "cabinet",
+            "wall",
+            "dining table",
+            "bar"
+          ],
+          "original": [
+            "chair",
+            "table",
+            "window",
+            "floor"
+          ],
+          "support": [
+            "chairs"
+          ]
+        },
+        {
+          "key": "v2",
+          "viewId": "00312",
+          "tags": [
+            "table",
+            "chair",
+            "floor",
+            "window",
+            "dining table",
+            "counter",
+            "bar",
+            "wall",
+            "chairs"
+          ],
+          "original": [
+            "chair",
+            "table",
+            "window",
+            "floor"
+          ],
+          "support": [
+            "chairs"
+          ]
+        },
+        {
+          "key": "v3",
+          "viewId": "00316",
+          "tags": [
+            "table",
+            "chair",
+            "floor",
+            "wall",
+            "chairs",
+            "counter",
+            "bar",
+            "dining table",
+            "window"
+          ],
+          "original": [
+            "chair",
+            "table",
+            "floor",
+            "wall"
+          ],
+          "support": [
+            "chairs"
+          ]
+        },
+        {
+          "key": "v4",
+          "viewId": "00378",
+          "tags": [
+            "table",
+            "chair",
+            "microwave",
+            "window",
+            "floor",
+            "cabinets",
+            "dining table",
+            "wall",
+            "cabinet",
+            "chairs",
+            "counter"
+          ],
+          "original": [
+            "chair",
+            "table",
+            "window",
+            "microwave",
+            "floor"
+          ],
+          "support": [
+            "chairs"
+          ]
+        },
+        {
+          "key": "v5",
+          "viewId": "00380",
+          "tags": [
+            "table",
+            "chairs",
+            "microwave",
+            "window",
+            "floor",
+            "dining table",
+            "chair",
+            "cabinets",
+            "wall",
+            "cabinet",
+            "counter"
+          ],
+          "original": [
+            "chairs",
+            "table",
+            "window",
+            "microwave",
+            "floor"
+          ],
+          "support": [
+            "chair"
+          ]
+        }
+      ],
+      "candidates": [
+        {
+          "label": "chair",
+          "vw": 0.3513,
+          "point": 0.86,
+          "fused": 1.0
+        },
+        {
+          "label": "chairs",
+          "vw": 0.3126,
+          "point": 0.7531,
+          "fused": 0.8236
+        },
+        {
+          "label": "table",
+          "vw": 0.1131,
+          "point": 0.572,
+          "fused": 0.3723
+        },
+        {
+          "label": "bar",
+          "vw": 0.0099,
+          "point": 0.5853,
+          "fused": 0.2712
+        },
+        {
+          "label": "dining table",
+          "vw": 0.0391,
+          "point": 0.4945,
+          "fused": 0.1922
+        },
+        {
+          "label": "window",
+          "vw": 0.0002,
+          "point": 0.4736,
+          "fused": 0.1219
+        },
+        {
+          "label": "microwave",
+          "vw": 0.002,
+          "point": 0.4277,
+          "fused": 0.0673
+        },
+        {
+          "label": "cabinets",
+          "vw": 0.0042,
+          "point": 0.4193,
+          "fused": 0.0593
+        },
+        {
+          "label": "cabinet",
+          "vw": 0.0014,
+          "point": 0.4193,
+          "fused": 0.0561
+        },
+        {
+          "label": "floor",
+          "vw": 0.0036,
+          "point": 0.3829,
+          "fused": 0.0136
+        },
+        {
+          "label": "wall",
+          "vw": 0.0045,
+          "point": 0.375,
+          "fused": 0.0049
+        }
+      ],
+      "top1": {
+        "label": "chair",
+        "fused": 1.0
+      }
+    },
+    "49": {
+      "inst": 182,
+      "views": [
+        "00334",
+        "00332",
+        "00158",
+        "00330",
+        "00162"
+      ],
+      "tagsByView": [
+        {
+          "key": "v1",
+          "viewId": "00334",
+          "tags": [
+            "table",
+            "chair",
+            "door",
+            "floor",
+            "chairs",
+            "dining table",
+            "wall",
+            "cabinet",
+            "kitchen",
+            "counter",
+            "tables",
+            "bar stool",
+            "stools",
+            "light",
+            "curtain",
+            "lamp",
+            "plant"
+          ],
+          "original": [
+            "chair",
+            "table",
+            "door",
+            "floor"
+          ],
+          "support": [
+            "chairs"
+          ]
+        },
+        {
+          "key": "v2",
+          "viewId": "00332",
+          "tags": [
+            "table",
+            "chair",
+            "floor",
+            "door",
+            "window",
+            "chairs",
+            "dining table",
+            "bar stool",
+            "wall",
+            "light"
+          ],
+          "original": [
+            "chair",
+            "table",
+            "door",
+            "floor",
+            "window"
+          ],
+          "support": [
+            "chairs"
+          ]
+        },
+        {
+          "key": "v3",
+          "viewId": "00158",
+          "tags": [
+            "table",
+            "chair",
+            "floor",
+            "wall",
+            "cabinet",
+            "chairs",
+            "dining table",
+            "counter",
+            "kitchen",
+            "tables",
+            "window",
+            "light",
+            "curtain",
+            "door"
+          ],
+          "original": [
+            "chair",
+            "table",
+            "floor",
+            "wall",
+            "cabinet"
+          ],
+          "support": [
+            "chairs"
+          ]
+        },
+        {
+          "key": "v4",
+          "viewId": "00330",
+          "tags": [
+            "table",
+            "chairs",
+            "floor",
+            "door",
+            "window",
+            "curtain",
+            "dining table",
+            "lamp",
+            "plant",
+            "light",
+            "chair",
+            "wall"
+          ],
+          "original": [
+            "chairs",
+            "table",
+            "door",
+            "floor",
+            "window"
+          ],
+          "support": [
+            "chair"
+          ]
+        },
+        {
+          "key": "v5",
+          "viewId": "00162",
+          "tags": [
+            "chairs",
+            "table",
+            "floor",
+            "wall",
+            "chair",
+            "bar stool",
+            "stools",
+            "window",
+            "door",
+            "tables",
+            "cabinet",
+            "dining table"
+          ],
+          "original": [
+            "chairs",
+            "table",
+            "floor"
+          ],
+          "support": [
+            "chair"
+          ]
+        }
+      ],
+      "candidates": [
+        {
+          "label": "chair",
+          "vw": 0.203,
+          "point": 0.7369,
+          "fused": 0.9193
+        },
+        {
+          "label": "chairs",
+          "vw": 0.2542,
+          "point": 0.6953,
+          "fused": 0.9072
+        },
+        {
+          "label": "bar stool",
+          "vw": 0.0682,
+          "point": 0.6298,
+          "fused": 0.4682
+        },
+        {
+          "label": "stools",
+          "vw": 0.0114,
+          "point": 0.6356,
+          "fused": 0.3915
+        },
+        {
+          "label": "table",
+          "vw": 0.0737,
+          "point": 0.5083,
+          "fused": 0.2059
+        },
+        {
+          "label": "lamp",
+          "vw": 0.0004,
+          "point": 0.5066,
+          "fused": 0.0866
+        },
+        {
+          "label": "plant",
+          "vw": 0.0003,
+          "point": 0.4895,
+          "fused": 0.0483
+        },
+        {
+          "label": "dining table",
+          "vw": 0.0126,
+          "point": 0.4792,
+          "fused": 0.0447
+        },
+        {
+          "label": "door",
+          "vw": 0.0009,
+          "point": 0.4678,
+          "fused": 0.0009
+        }
+      ],
+      "top1": {
+        "label": "chair",
+        "fused": 0.9193
+      }
+    },
+    "60": {
+      "inst": 201,
+      "views": [
+        "00236",
+        "00238",
+        "00426",
+        "00424",
+        "00230"
+      ],
+      "tagsByView": [
+        {
+          "key": "v1",
+          "viewId": "00236",
+          "tags": [
+            "tv",
+            "table",
+            "chair",
+            "trash can",
+            "door",
+            "television",
+            "wall"
+          ],
+          "original": [
+            "tv",
+            "door",
+            "chair",
+            "table",
+            "trash can"
+          ],
+          "support": [
+            "television"
+          ]
+        },
+        {
+          "key": "v2",
+          "viewId": "00238",
+          "tags": [
+            "tv",
+            "table",
+            "chair",
+            "trash can",
+            "television",
+            "wall",
+            "window",
+            "light switch",
+            "door"
+          ],
+          "original": [
+            "tv",
+            "chair",
+            "table",
+            "trash can"
+          ],
+          "support": [
+            "window"
+          ]
+        },
+        {
+          "key": "v3",
+          "viewId": "00426",
+          "tags": [
+            "tv",
+            "table",
+            "wall",
+            "light switch",
+            "window",
+            "chair",
+            "television",
+            "exit sign",
+            "door",
+            "trash can"
+          ],
+          "original": [
+            "tv",
+            "window",
+            "light switch",
+            "chair",
+            "table",
+            "wall"
+          ],
+          "support": [
+            "television"
+          ]
+        },
+        {
+          "key": "v4",
+          "viewId": "00424",
+          "tags": [
+            "tv",
+            "table",
+            "wall",
+            "window",
+            "trash can",
+            "television",
+            "door",
+            "chair",
+            "exit sign"
+          ],
+          "original": [
+            "tv",
+            "window",
+            "table",
+            "wall",
+            "trash can"
+          ],
+          "support": [
+            "television"
+          ]
+        },
+        {
+          "key": "v5",
+          "viewId": "00230",
+          "tags": [
+            "tv",
+            "table",
+            "chair",
+            "door",
+            "exit sign",
+            "television",
+            "wall"
+          ],
+          "original": [
+            "tv",
+            "door",
+            "exit sign",
+            "chair",
+            "table"
+          ],
+          "support": [
+            "television"
+          ]
+        }
+      ],
+      "candidates": [
+        {
+          "label": "tv",
+          "vw": 0.6496,
+          "point": 0.4923,
+          "fused": 0.706
+        },
+        {
+          "label": "window",
+          "vw": 0.0024,
+          "point": 0.618,
+          "fused": 0.6014
+        },
+        {
+          "label": "television",
+          "vw": 0.3385,
+          "point": 0.5233,
+          "fused": 0.5869
+        },
+        {
+          "label": "light switch",
+          "vw": 0.0006,
+          "point": 0.5429,
+          "fused": 0.4247
+        },
+        {
+          "label": "door",
+          "vw": 0.0007,
+          "point": 0.4916,
+          "fused": 0.3047
+        },
+        {
+          "label": "exit sign",
+          "vw": 0.0001,
+          "point": 0.491,
+          "fused": 0.303
+        },
+        {
+          "label": "chair",
+          "vw": 0.0006,
+          "point": 0.4553,
+          "fused": 0.2197
+        },
+        {
+          "label": "table",
+          "vw": 0.0005,
+          "point": 0.3614,
+          "fused": 0.0003
+        }
+      ],
+      "top1": {
+        "label": "tv",
+        "fused": 0.706
+      }
+    },
+    "77": {
+      "inst": 195,
+      "views": [
+        "00158",
+        "00408",
+        "00406",
+        "00404",
+        "00402"
+      ],
+      "tagsByView": [
+        {
+          "key": "v1",
+          "viewId": "00158",
+          "tags": [
+            "table",
+            "chairs",
+            "floor",
+            "wall",
+            "cabinet",
+            "chair",
+            "dining table",
+            "counter",
+            "kitchen",
+            "tables",
+            "window",
+            "oven",
+            "refrigerator",
+            "tv"
+          ],
+          "original": [
+            "chairs",
+            "table",
+            "cabinet",
+            "floor",
+            "wall"
+          ],
+          "support": [
+            "chair"
+          ]
+        },
+        {
+          "key": "v2",
+          "viewId": "00408",
+          "tags": [
+            "chairs",
+            "table",
+            "television",
+            "cabinet",
+            "window",
+            "floor",
+            "kitchen",
+            "tv",
+            "tables",
+            "wall",
+            "counter",
+            "dining table",
+            "refrigerator",
+            "oven",
+            "chair",
+            "bar stool",
+            "stool"
+          ],
+          "original": [
+            "chairs",
+            "table",
+            "cabinet",
+            "television"
+          ],
+          "support": [
+            "chair"
+          ]
+        },
+        {
+          "key": "v3",
+          "viewId": "00406",
+          "tags": [
+            "chairs",
+            "table",
+            "floor",
+            "oven",
+            "cabinet",
+            "chair",
+            "bar stool",
+            "refrigerator",
+            "counter",
+            "stool",
+            "kitchen",
+            "tables",
+            "tv",
+            "dining table",
+            "wall",
+            "window"
+          ],
+          "original": [
+            "chairs",
+            "table",
+            "cabinet",
+            "floor",
+            "oven"
+          ],
+          "support": [
+            "chair"
+          ]
+        },
+        {
+          "key": "v4",
+          "viewId": "00404",
+          "tags": [
+            "chairs",
+            "table",
+            "refrigerator",
+            "window",
+            "floor",
+            "counter",
+            "cabinet",
+            "wall",
+            "chair",
+            "bar stool",
+            "television",
+            "tv",
+            "dining table"
+          ],
+          "original": [
+            "chairs",
+            "table",
+            "window",
+            "cabinet",
+            "floor",
+            "refrigerator",
+            "counter"
+          ],
+          "support": [
+            "chair"
+          ]
+        },
+        {
+          "key": "v5",
+          "viewId": "00402",
+          "tags": [
+            "table",
+            "chair",
+            "refrigerator",
+            "window",
+            "tv",
+            "cabinet",
+            "floor",
+            "chairs",
+            "dining table",
+            "wall",
+            "television",
+            "counter"
+          ],
+          "original": [
+            "chair",
+            "table",
+            "window",
+            "cabinet",
+            "refrigerator",
+            "tv"
+          ],
+          "support": [
+            "chairs"
+          ]
+        }
+      ],
+      "candidates": [
+        {
+          "label": "chair",
+          "vw": 0.2016,
+          "point": 0.7725,
+          "fused": 0.9512
+        },
+        {
+          "label": "chairs",
+          "vw": 0.2177,
+          "point": 0.7157,
+          "fused": 0.9054
+        },
+        {
+          "label": "bar stool",
+          "vw": 0.1502,
+          "point": 0.7761,
+          "fused": 0.8614
+        },
+        {
+          "label": "stool",
+          "vw": 0.013,
+          "point": 0.7869,
+          "fused": 0.6235
+        },
+        {
+          "label": "dining table",
+          "vw": 0.0115,
+          "point": 0.5538,
+          "fused": 0.3108
+        },
+        {
+          "label": "table",
+          "vw": 0.0511,
+          "point": 0.4913,
+          "fused": 0.3007
+        },
+        {
+          "label": "window",
+          "vw": 0.0002,
+          "point": 0.4659,
+          "fused": 0.1733
+        },
+        {
+          "label": "cabinet",
+          "vw": 0.0022,
+          "point": 0.4078,
+          "fused": 0.0998
+        },
+        {
+          "label": "floor",
+          "vw": 0.0031,
+          "point": 0.384,
+          "fused": 0.0698
+        },
+        {
+          "label": "wall",
+          "vw": 0.0025,
+          "point": 0.3355,
+          "fused": 0.0042
+        }
+      ],
+      "top1": {
+        "label": "chair",
+        "fused": 0.9512
+      }
+    },
+    "84": {
+      "inst": 194,
+      "views": [
+        "00392",
+        "00390",
+        "00394",
+        "00396",
+        "00388"
+      ],
+      "tagsByView": [
+        {
+          "key": "v1",
+          "viewId": "00392",
+          "tags": [
+            "table",
+            "chairs",
+            "window",
+            "trash can",
+            "tv",
+            "wall",
+            "floor",
+            "television",
+            "chair",
+            "refrigerator",
+            "dining table",
+            "counter"
+          ],
+          "original": [
+            "chairs",
+            "table",
+            "trash can",
+            "tv",
+            "window"
+          ],
+          "support": [
+            "chair"
+          ]
+        },
+        {
+          "key": "v2",
+          "viewId": "00390",
+          "tags": [
+            "chair",
+            "table",
+            "window",
+            "floor",
+            "chairs",
+            "wall",
+            "bar stool",
+            "refrigerator",
+            "cabinet",
+            "bar",
+            "dining table",
+            "counter",
+            "tv"
+          ],
+          "original": [
+            "chair",
+            "table",
+            "floor",
+            "window"
+          ],
+          "support": [
+            "chairs"
+          ]
+        },
+        {
+          "key": "v3",
+          "viewId": "00394",
+          "tags": [
+            "table",
+            "chair",
+            "window",
+            "floor",
+            "wall",
+            "television",
+            "chairs",
+            "tv",
+            "cabinet",
+            "counter",
+            "bar",
+            "dining table",
+            "trash can",
+            "refrigerator",
+            "bar stool"
+          ],
+          "original": [
+            "chair",
+            "table",
+            "television",
+            "floor",
+            "window",
+            "wall"
+          ],
+          "support": [
+            "chairs"
+          ]
+        },
+        {
+          "key": "v4",
+          "viewId": "00396",
+          "tags": [
+            "table",
+            "chairs",
+            "window",
+            "refrigerator",
+            "tv",
+            "wall",
+            "floor",
+            "dining table",
+            "chair",
+            "counter",
+            "cabinet",
+            "bar stool",
+            "trash can"
+          ],
+          "original": [
+            "chairs",
+            "table",
+            "tv",
+            "window",
+            "refrigerator"
+          ],
+          "support": [
+            "chair"
+          ]
+        },
+        {
+          "key": "v5",
+          "viewId": "00388",
+          "tags": [
+            "table",
+            "chair",
+            "window",
+            "floor",
+            "chairs",
+            "dining table",
+            "counter",
+            "television",
+            "wall",
+            "tv",
+            "cabinet"
+          ],
+          "original": [
+            "chair",
+            "table",
+            "floor",
+            "window"
+          ],
+          "support": [
+            "chairs"
+          ]
+        }
+      ],
+      "candidates": [
+        {
+          "label": "chair",
+          "vw": 0.1854,
+          "point": 0.7286,
+          "fused": 0.9915
+        },
+        {
+          "label": "chairs",
+          "vw": 0.1894,
+          "point": 0.7021,
+          "fused": 0.9388
+        },
+        {
+          "label": "bar stool",
+          "vw": 0.1041,
+          "point": 0.6652,
+          "fused": 0.6735
+        },
+        {
+          "label": "table",
+          "vw": 0.04,
+          "point": 0.5377,
+          "fused": 0.244
+        },
+        {
+          "label": "trash can",
+          "vw": 0.0006,
+          "point": 0.5414,
+          "fused": 0.1694
+        },
+        {
+          "label": "bar",
+          "vw": 0.0052,
+          "point": 0.5343,
+          "fused": 0.1628
+        },
+        {
+          "label": "dining table",
+          "vw": 0.0123,
+          "point": 0.5078,
+          "fused": 0.1166
+        },
+        {
+          "label": "television",
+          "vw": 0.0002,
+          "point": 0.5148,
+          "fused": 0.1071
+        },
+        {
+          "label": "floor",
+          "vw": 0.0014,
+          "point": 0.4913,
+          "fused": 0.0555
+        },
+        {
+          "label": "tv",
+          "vw": 0.0006,
+          "point": 0.4912,
+          "fused": 0.0536
+        },
+        {
+          "label": "window",
+          "vw": 0.0002,
+          "point": 0.4838,
+          "fused": 0.0356
+        },
+        {
+          "label": "wall",
+          "vw": 0.0012,
+          "point": 0.4684,
+          "fused": 0.0022
+        }
+      ],
+      "top1": {
+        "label": "chair",
+        "fused": 0.9915
+      }
+    },
+    "113": {
+      "inst": 227,
+      "views": [
+        "00374",
+        "00380",
+        "00382",
+        "00378",
+        "00386"
+      ],
+      "tagsByView": [
+        {
+          "key": "v1",
+          "viewId": "00374",
+          "tags": [
+            "table",
+            "chair",
+            "floor",
+            "wall",
+            "dining table",
+            "chairs",
+            "counter",
+            "cabinets",
+            "window",
+            "cabinet",
+            "microwave",
+            "oven",
+            "kitchen counter"
+          ],
+          "original": [
+            "table",
+            "floor",
+            "chair"
+          ],
+          "support": [
+            "dining table"
+          ]
+        },
+        {
+          "key": "v2",
+          "viewId": "00380",
+          "tags": [
+            "table",
+            "chairs",
+            "microwave",
+            "window",
+            "floor",
+            "dining table",
+            "chair",
+            "cabinets",
+            "wall",
+            "cabinet",
+            "counter",
+            "oven",
+            "kitchen counter"
+          ],
+          "original": [
+            "table",
+            "microwave",
+            "floor",
+            "chairs",
+            "window"
+          ],
+          "support": [
+            "dining table"
+          ]
+        },
+        {
+          "key": "v3",
+          "viewId": "00382",
+          "tags": [
+            "table",
+            "chairs",
+            "cabinets",
+            "oven",
+            "microwave",
+            "window",
+            "dining table",
+            "kitchen counter",
+            "cabinet",
+            "floor",
+            "chair",
+            "wall",
+            "counter"
+          ],
+          "original": [
+            "table",
+            "cabinets",
+            "microwave",
+            "chairs",
+            "oven",
+            "window"
+          ],
+          "support": [
+            "dining table"
+          ]
+        },
+        {
+          "key": "v4",
+          "viewId": "00378",
+          "tags": [
+            "table",
+            "chair",
+            "microwave",
+            "window",
+            "floor",
+            "cabinets",
+            "dining table",
+            "wall",
+            "cabinet",
+            "chairs",
+            "oven",
+            "kitchen counter",
+            "counter"
+          ],
+          "original": [
+            "table",
+            "microwave",
+            "floor",
+            "chair",
+            "window"
+          ],
+          "support": [
+            "dining table"
+          ]
+        },
+        {
+          "key": "v5",
+          "viewId": "00386",
+          "tags": [
+            "table",
+            "chairs",
+            "microwave",
+            "dining table",
+            "cabinets",
+            "window",
+            "chair",
+            "counter",
+            "floor",
+            "wall",
+            "cabinet",
+            "oven",
+            "kitchen counter"
+          ],
+          "original": [
+            "table",
+            "microwave",
+            "chairs"
+          ],
+          "support": [
+            "dining table"
+          ]
+        }
+      ],
+      "candidates": [
+        {
+          "label": "table",
+          "vw": 0.1613,
+          "point": 0.6477,
+          "fused": 0.8947
+        },
+        {
+          "label": "dining table",
+          "vw": 0.1878,
+          "point": 0.5621,
+          "fused": 0.7009
+        },
+        {
+          "label": "kitchen counter",
+          "vw": 0.1029,
+          "point": 0.6146,
+          "fused": 0.6712
+        },
+        {
+          "label": "counter",
+          "vw": 0.0187,
+          "point": 0.6641,
+          "fused": 0.6344
+        },
+        {
+          "label": "cabinets",
+          "vw": 0.0248,
+          "point": 0.4909,
+          "fused": 0.1395
+        },
+        {
+          "label": "microwave",
+          "vw": 0.0028,
+          "point": 0.5026,
+          "fused": 0.1263
+        },
+        {
+          "label": "floor",
+          "vw": 0.0068,
+          "point": 0.4596,
+          "fused": 0.0086
+        }
+      ],
+      "top1": {
+        "label": "table",
+        "fused": 0.8947
+      }
+    },
+    "127": {
+      "inst": 180,
+      "views": [
+        "00380",
+        "00378",
+        "00382",
+        "00302",
+        "00300"
+      ],
+      "tagsByView": [
+        {
+          "key": "v1",
+          "viewId": "00380",
+          "tags": [
+            "table",
+            "chairs",
+            "microwave",
+            "window",
+            "floor",
+            "dining table",
+            "chair",
+            "cabinets",
+            "wall",
+            "cabinet",
+            "stool",
+            "trash can",
+            "counter",
+            "oven",
+            "kitchen counter"
+          ],
+          "original": [
+            "chairs",
+            "microwave",
+            "table",
+            "window",
+            "floor"
+          ],
+          "support": [
+            "chair"
+          ]
+        },
+        {
+          "key": "v2",
+          "viewId": "00378",
+          "tags": [
+            "table",
+            "chair",
+            "microwave",
+            "window",
+            "floor",
+            "cabinets",
+            "dining table",
+            "wall",
+            "cabinet",
+            "chairs",
+            "oven",
+            "kitchen counter",
+            "counter"
+          ],
+          "original": [
+            "chair",
+            "microwave",
+            "table",
+            "window",
+            "floor"
+          ],
+          "support": [
+            "chairs"
+          ]
+        },
+        {
+          "key": "v3",
+          "viewId": "00382",
+          "tags": [
+            "table",
+            "chairs",
+            "cabinets",
+            "oven",
+            "microwave",
+            "window",
+            "dining table",
+            "kitchen counter",
+            "cabinet",
+            "floor",
+            "chair",
+            "wall",
+            "counter"
+          ],
+          "original": [
+            "chairs",
+            "microwave",
+            "table",
+            "cabinets",
+            "window",
+            "oven"
+          ],
+          "support": [
+            "chair"
+          ]
+        },
+        {
+          "key": "v4",
+          "viewId": "00302",
+          "tags": [
+            "chair",
+            "counter",
+            "floor",
+            "table",
+            "wall",
+            "cabinet",
+            "trash can",
+            "bar stool",
+            "stool",
+            "curtain",
+            "rug",
+            "oven",
+            "cabinets",
+            "window",
+            "microwave",
+            "kitchen counter",
+            "dining table",
+            "couch",
+            "chairs"
+          ],
+          "original": [
+            "chair",
+            "trash can",
+            "table",
+            "cabinet",
+            "wall",
+            "floor",
+            "counter"
+          ],
+          "support": [
+            "chairs"
+          ]
+        },
+        {
+          "key": "v5",
+          "viewId": "00300",
+          "tags": [
+            "chair",
+            "table",
+            "trash can",
+            "couch",
+            "floor",
+            "wall",
+            "chairs",
+            "stool",
+            "rug",
+            "curtain",
+            "counter",
+            "cabinet",
+            "bar stool",
+            "dining table"
+          ],
+          "original": [
+            "chair",
+            "trash can",
+            "couch",
+            "table",
+            "wall",
+            "floor"
+          ],
+          "support": [
+            "chairs"
+          ]
+        }
+      ],
+      "candidates": [
+        {
+          "label": "chair",
+          "vw": 0.3967,
+          "point": 0.8086,
+          "fused": 1.0
+        },
+        {
+          "label": "chairs",
+          "vw": 0.1818,
+          "point": 0.6796,
+          "fused": 0.5968
+        },
+        {
+          "label": "bar stool",
+          "vw": 0.0582,
+          "point": 0.7526,
+          "fused": 0.5776
+        },
+        {
+          "label": "stool",
+          "vw": 0.0232,
+          "point": 0.7446,
+          "fused": 0.5308
+        },
+        {
+          "label": "trash can",
+          "vw": 0.0009,
+          "point": 0.5309,
+          "fused": 0.1995
+        },
+        {
+          "label": "microwave",
+          "vw": 0.0001,
+          "point": 0.5189,
+          "fused": 0.1813
+        },
+        {
+          "label": "couch",
+          "vw": 0.0015,
+          "point": 0.5117,
+          "fused": 0.1724
+        },
+        {
+          "label": "table",
+          "vw": 0.0119,
+          "point": 0.501,
+          "fused": 0.1674
+        },
+        {
+          "label": "cabinet",
+          "vw": 0.0003,
+          "point": 0.4846,
+          "fused": 0.1321
+        },
+        {
+          "label": "cabinets",
+          "vw": 0.0004,
+          "point": 0.4827,
+          "fused": 0.1294
+        },
+        {
+          "label": "wall",
+          "vw": 0.0018,
+          "point": 0.4654,
+          "fused": 0.1059
+        },
+        {
+          "label": "window",
+          "vw": 0.0001,
+          "point": 0.465,
+          "fused": 0.1035
+        },
+        {
+          "label": "oven",
+          "vw": 0.0002,
+          "point": 0.4565,
+          "fused": 0.0912
+        },
+        {
+          "label": "floor",
+          "vw": 0.0008,
+          "point": 0.3934,
+          "fused": 0.0007
+        }
+      ],
+      "top1": {
+        "label": "chair",
+        "fused": 1.0
+      }
+    },
+    "143": {
+      "inst": 215,
+      "views": [
+        "00342",
+        "00340",
+        "00338",
+        "00336",
+        "00344"
+      ],
+      "tagsByView": [
+        {
+          "key": "v1",
+          "viewId": "00342",
+          "tags": [
+            "table",
+            "chair",
+            "door",
+            "floor",
+            "wall",
+            "light",
+            "television",
+            "window",
+            "chairs",
+            "dining table"
+          ],
+          "original": [
+            "door",
+            "wall",
+            "table",
+            "chair",
+            "floor"
+          ],
+          "support": [
+            "window"
+          ]
+        },
+        {
+          "key": "v2",
+          "viewId": "00340",
+          "tags": [
+            "table",
+            "chair",
+            "door",
+            "floor",
+            "window",
+            "dining table",
+            "chairs",
+            "wall"
+          ],
+          "original": [
+            "door",
+            "window",
+            "table",
+            "chair",
+            "floor"
+          ],
+          "support": [
+            "dining table"
+          ]
+        },
+        {
+          "key": "v3",
+          "viewId": "00338",
+          "tags": [
+            "table",
+            "chair",
+            "door",
+            "floor",
+            "television",
+            "window",
+            "wall",
+            "chairs",
+            "dining table"
+          ],
+          "original": [
+            "door",
+            "table",
+            "chair",
+            "floor"
+          ],
+          "support": [
+            "window"
+          ]
+        },
+        {
+          "key": "v4",
+          "viewId": "00336",
+          "tags": [
+            "table",
+            "chair",
+            "door",
+            "floor",
+            "chairs",
+            "window",
+            "dining table",
+            "wall",
+            "light"
+          ],
+          "original": [
+            "door",
+            "table",
+            "chair",
+            "floor"
+          ],
+          "support": [
+            "window"
+          ]
+        },
+        {
+          "key": "v5",
+          "viewId": "00344",
+          "tags": [
+            "table",
+            "chair",
+            "door",
+            "floor",
+            "dining table",
+            "light",
+            "wall"
+          ],
+          "original": [
+            "door",
+            "table",
+            "chair",
+            "floor"
+          ],
+          "support": [
+            "wall"
+          ]
+        }
+      ],
+      "candidates": [
+        {
+          "label": "door",
+          "vw": 0.8556,
+          "point": 0.787,
+          "fused": 1.0
+        },
+        {
+          "label": "window",
+          "vw": 0.0434,
+          "point": 0.7178,
+          "fused": 0.5179
+        },
+        {
+          "label": "wall",
+          "vw": 0.0233,
+          "point": 0.5994,
+          "fused": 0.3339
+        },
+        {
+          "label": "television",
+          "vw": 0.0006,
+          "point": 0.5814,
+          "fused": 0.2967
+        },
+        {
+          "label": "table",
+          "vw": 0.0106,
+          "point": 0.3803,
+          "fused": 0.0047
+        }
+      ],
+      "top1": {
+        "label": "door",
+        "fused": 1.0
+      }
+    },
+    "160": {
+      "inst": 210,
+      "views": [
+        "00412",
+        "00418",
+        "00416",
+        "00414",
+        "00306"
+      ],
+      "tagsByView": [
+        {
+          "key": "v1",
+          "viewId": "00412",
+          "tags": [
+            "chair",
+            "table",
+            "tv",
+            "trash can",
+            "wall",
+            "television",
+            "door",
+            "floor",
+            "stool",
+            "rug",
+            "curtain",
+            "bar stool"
+          ],
+          "original": [
+            "trash can",
+            "tv",
+            "chair",
+            "table"
+          ],
+          "support": [
+            "television"
+          ]
+        },
+        {
+          "key": "v2",
+          "viewId": "00418",
+          "tags": [
+            "tv",
+            "table",
+            "chair",
+            "trash can",
+            "television",
+            "wall",
+            "floor"
+          ],
+          "original": [
+            "trash can",
+            "tv",
+            "chair",
+            "table"
+          ],
+          "support": [
+            "television"
+          ]
+        },
+        {
+          "key": "v3",
+          "viewId": "00416",
+          "tags": [
+            "tv",
+            "table",
+            "chair",
+            "trash can",
+            "wall",
+            "floor",
+            "door",
+            "television"
+          ],
+          "original": [
+            "trash can",
+            "tv",
+            "chair",
+            "table",
+            "door",
+            "wall",
+            "floor"
+          ],
+          "support": [
+            "television"
+          ]
+        },
+        {
+          "key": "v4",
+          "viewId": "00414",
+          "tags": [
+            "tv",
+            "table",
+            "chair",
+            "trash can",
+            "television",
+            "door",
+            "wall",
+            "floor"
+          ],
+          "original": [
+            "trash can",
+            "tv",
+            "chair",
+            "table"
+          ],
+          "support": [
+            "television"
+          ]
+        },
+        {
+          "key": "v5",
+          "viewId": "00306",
+          "tags": [
+            "chair",
+            "table",
+            "trash can",
+            "floor",
+            "wall",
+            "curtain",
+            "bar stool",
+            "stool",
+            "rug",
+            "door",
+            "television",
+            "tv"
+          ],
+          "original": [
+            "trash can",
+            "chair",
+            "table",
+            "wall",
+            "floor"
+          ],
+          "support": [
+            "tv"
+          ]
+        }
+      ],
+      "candidates": [
+        {
+          "label": "trash can",
+          "vw": 0.7203,
+          "point": 0.8676,
+          "fused": 1.0
+        },
+        {
+          "label": "tv",
+          "vw": 0.0062,
+          "point": 0.5753,
+          "fused": 0.2438
+        },
+        {
+          "label": "chair",
+          "vw": 0.0419,
+          "point": 0.5464,
+          "fused": 0.2283
+        },
+        {
+          "label": "television",
+          "vw": 0.0033,
+          "point": 0.5273,
+          "fused": 0.1834
+        },
+        {
+          "label": "table",
+          "vw": 0.0077,
+          "point": 0.5214,
+          "fused": 0.1786
+        },
+        {
+          "label": "stool",
+          "vw": 0.0201,
+          "point": 0.4949,
+          "fused": 0.1531
+        },
+        {
+          "label": "bar stool",
+          "vw": 0.0093,
+          "point": 0.4844,
+          "fused": 0.1342
+        },
+        {
+          "label": "door",
+          "vw": 0.009,
+          "point": 0.3968,
+          "fused": 0.0268
+        },
+        {
+          "label": "wall",
+          "vw": 0.0293,
+          "point": 0.3775,
+          "fused": 0.0145
+        }
+      ],
+      "top1": {
+        "label": "trash can",
+        "fused": 1.0
+      }
+    },
+    "210": {
+      "inst": 232,
+      "views": [
+        "00196",
+        "00192",
+        "00394",
+        "00396",
+        "00398"
+      ],
+      "tagsByView": [
+        {
+          "key": "v1",
+          "viewId": "00196",
+          "tags": [
+            "vent",
+            "window",
+            "counter",
+            "stove",
+            "outlet",
+            "cabinet",
+            "range hood",
+            "wall",
+            "hood",
+            "ceiling",
+            "cabinets",
+            "oven",
+            "countertop",
+            "table",
+            "chair",
+            "refrigerator",
+            "chairs",
+            "floor",
+            "backsplash",
+            "wall socket",
+            "wall tiles",
+            "dining table",
+            "tv",
+            "television",
+            "bar"
+          ],
+          "original": [
+            "window",
+            "outlet",
+            "vent",
+            "counter",
+            "stove",
+            "cabinet"
+          ],
+          "support": [
+            "wall"
+          ]
+        },
+        {
+          "key": "v2",
+          "viewId": "00192",
+          "tags": [
+            "stove",
+            "range hood",
+            "window",
+            "wall",
+            "countertop",
+            "cabinet",
+            "outlet",
+            "backsplash",
+            "wall socket",
+            "cabinets",
+            "oven",
+            "wall tiles",
+            "counter",
+            "refrigerator",
+            "dining table",
+            "vent"
+          ],
+          "original": [
+            "window",
+            "outlet",
+            "wall",
+            "stove",
+            "range hood",
+            "countertop",
+            "cabinet"
+          ],
+          "support": [
+            "wall tiles"
+          ]
+        },
+        {
+          "key": "v3",
+          "viewId": "00394",
+          "tags": [
+            "table",
+            "chair",
+            "window",
+            "floor",
+            "wall",
+            "television",
+            "chairs",
+            "tv",
+            "cabinet",
+            "counter",
+            "bar",
+            "dining table",
+            "countertop",
+            "cabinets",
+            "oven",
+            "refrigerator"
+          ],
+          "original": [
+            "window",
+            "wall",
+            "floor",
+            "television",
+            "table",
+            "chair"
+          ],
+          "support": [
+            "tv"
+          ]
+        },
+        {
+          "key": "v4",
+          "viewId": "00396",
+          "tags": [
+            "table",
+            "chairs",
+            "window",
+            "refrigerator",
+            "tv",
+            "wall",
+            "floor",
+            "dining table",
+            "chair",
+            "counter",
+            "backsplash",
+            "ceiling",
+            "cabinets",
+            "oven",
+            "hood",
+            "countertop",
+            "vent",
+            "stove",
+            "outlet",
+            "wall socket",
+            "wall tiles",
+            "range hood",
+            "cabinet"
+          ],
+          "original": [
+            "window",
+            "tv",
+            "table",
+            "chairs",
+            "refrigerator"
+          ],
+          "support": [
+            "outlet"
+          ]
+        },
+        {
+          "key": "v5",
+          "viewId": "00398",
+          "tags": [
+            "table",
+            "chairs",
+            "refrigerator",
+            "window",
+            "tv",
+            "counter",
+            "floor",
+            "wall",
+            "cabinet",
+            "dining table",
+            "chair",
+            "bar",
+            "television",
+            "backsplash",
+            "ceiling",
+            "hood",
+            "cabinets",
+            "oven",
+            "countertop",
+            "vent",
+            "stove",
+            "outlet",
+            "wall socket",
+            "wall tiles",
+            "range hood"
+          ],
+          "original": [
+            "window",
+            "floor",
+            "tv",
+            "table",
+            "chairs",
+            "refrigerator",
+            "counter"
+          ],
+          "support": [
+            "wall"
+          ]
+        }
+      ],
+      "candidates": [
+        {
+          "label": "window",
+          "vw": 0.5778,
+          "point": 0.8104,
+          "fused": 1.0
+        },
+        {
+          "label": "outlet",
+          "vw": 0.0026,
+          "point": 0.6351,
+          "fused": 0.3891
+        },
+        {
+          "label": "wall",
+          "vw": 0.0856,
+          "point": 0.5286,
+          "fused": 0.3177
+        },
+        {
+          "label": "wall tiles",
+          "vw": 0.0022,
+          "point": 0.5596,
+          "fused": 0.2975
+        },
+        {
+          "label": "hood",
+          "vw": 0.0006,
+          "point": 0.5545,
+          "fused": 0.2901
+        },
+        {
+          "label": "wall socket",
+          "vw": 0.0015,
+          "point": 0.5351,
+          "fused": 0.2673
+        },
+        {
+          "label": "ceiling",
+          "vw": 0.0108,
+          "point": 0.5245,
+          "fused": 0.2608
+        },
+        {
+          "label": "vent",
+          "vw": 0.0019,
+          "point": 0.5214,
+          "fused": 0.251
+        },
+        {
+          "label": "floor",
+          "vw": 0.0244,
+          "point": 0.4677,
+          "fused": 0.2015
+        },
+        {
+          "label": "backsplash",
+          "vw": 0.0024,
+          "point": 0.4762,
+          "fused": 0.1965
+        },
+        {
+          "label": "television",
+          "vw": 0.0024,
+          "point": 0.4591,
+          "fused": 0.1758
+        },
+        {
+          "label": "tv",
+          "vw": 0.0139,
+          "point": 0.4474,
+          "fused": 0.1696
+        },
+        {
+          "label": "dining table",
+          "vw": 0.0074,
+          "point": 0.4186,
+          "fused": 0.1303
+        },
+        {
+          "label": "table",
+          "vw": 0.0271,
+          "point": 0.4014,
+          "fused": 0.1231
+        },
+        {
+          "label": "chair",
+          "vw": 0.0234,
+          "point": 0.3654,
+          "fused": 0.0769
+        },
+        {
+          "label": "bar",
+          "vw": 0.0111,
+          "point": 0.315,
+          "fused": 0.0073
+        }
+      ],
+      "top1": {
+        "label": "window",
+        "fused": 1.0
+      }
+    },
+    "211": {
+      "inst": 245,
+      "views": [
+        "00474",
+        "00472",
+        "00454",
+        "00144",
+        "00104"
+      ],
+      "tagsByView": [
+        {
+          "key": "v1",
+          "viewId": "00474",
+          "tags": [
+            "table",
+            "chair",
+            "door",
+            "floor",
+            "light",
+            "shadow",
+            "chairs",
+            "sink",
+            "dining table",
+            "refrigerator",
+            "countertop",
+            "wall",
+            "drawer",
+            "cabinets",
+            "windows",
+            "window",
+            "conference table",
+            "trash can",
+            "microwave",
+            "kitchen",
+            "oven",
+            "cabinet"
+          ],
+          "original": [
+            "chair",
+            "table",
+            "door",
+            "floor",
+            "light",
+            "shadow"
+          ],
+          "support": [
+            "sink"
+          ]
+        },
+        {
+          "key": "v2",
+          "viewId": "00472",
+          "tags": [
+            "door",
+            "chair",
+            "table",
+            "floor",
+            "light",
+            "shadow",
+            "oven",
+            "countertop",
+            "cabinet",
+            "chairs",
+            "dining table",
+            "kitchen",
+            "wall",
+            "cabinets",
+            "drawer",
+            "faucet",
+            "plant",
+            "microwave",
+            "drawers",
+            "windows",
+            "conference table",
+            "sink",
+            "refrigerator",
+            "window",
+            "trash can"
+          ],
+          "original": [
+            "chair",
+            "table",
+            "door",
+            "floor",
+            "light",
+            "shadow"
+          ],
+          "support": [
+            "drawer"
+          ]
+        },
+        {
+          "key": "v3",
+          "viewId": "00454",
+          "tags": [
+            "table",
+            "chair",
+            "floor",
+            "window",
+            "cabinet",
+            "chairs",
+            "trash can",
+            "conference table",
+            "dining table",
+            "windows",
+            "kitchen",
+            "cabinets",
+            "microwave",
+            "wall",
+            "drawer",
+            "oven",
+            "faucet",
+            "countertop",
+            "refrigerator",
+            "sink",
+            "light",
+            "shadow",
+            "door"
+          ],
+          "original": [
+            "cabinet",
+            "chair",
+            "table",
+            "floor",
+            "window"
+          ],
+          "support": [
+            "sink"
+          ]
+        },
+        {
+          "key": "v4",
+          "viewId": "00144",
+          "tags": [
+            "cabinets",
+            "window",
+            "countertop",
+            "sink",
+            "microwave",
+            "oven",
+            "chairs",
+            "floor",
+            "cabinet",
+            "chair",
+            "kitchen",
+            "drawer",
+            "wall",
+            "dining table",
+            "table"
+          ],
+          "original": [
+            "sink",
+            "countertop",
+            "cabinets",
+            "oven",
+            "microwave",
+            "chairs",
+            "window",
+            "floor"
+          ],
+          "support": [
+            "drawer"
+          ]
+        },
+        {
+          "key": "v5",
+          "viewId": "00104",
+          "tags": [
+            "cabinets",
+            "faucet",
+            "window",
+            "sink",
+            "countertop",
+            "microwave",
+            "cabinet",
+            "floor",
+            "drawer",
+            "plant",
+            "drawers",
+            "table",
+            "chair",
+            "oven",
+            "refrigerator",
+            "chairs",
+            "kitchen",
+            "windows",
+            "conference table",
+            "trash can",
+            "dining table",
+            "light",
+            "door",
+            "shadow"
+          ],
+          "original": [
+            "sink",
+            "countertop",
+            "cabinets",
+            "faucet",
+            "microwave",
+            "window"
+          ],
+          "support": [
+            "drawer"
+          ]
+        }
+      ],
+      "candidates": [
+        {
+          "label": "sink",
+          "vw": 0.2245,
+          "point": 0.6389,
+          "fused": 0.8308
+        },
+        {
+          "label": "drawer",
+          "vw": 0.0935,
+          "point": 0.7384,
+          "fused": 0.7178
+        },
+        {
+          "label": "drawers",
+          "vw": 0.0658,
+          "point": 0.7778,
+          "fused": 0.7161
+        },
+        {
+          "label": "cabinet",
+          "vw": 0.0705,
+          "point": 0.708,
+          "fused": 0.6395
+        },
+        {
+          "label": "countertop",
+          "vw": 0.0862,
+          "point": 0.655,
+          "fused": 0.603
+        },
+        {
+          "label": "cabinets",
+          "vw": 0.0061,
+          "point": 0.6,
+          "fused": 0.3927
+        },
+        {
+          "label": "refrigerator",
+          "vw": 0.004,
+          "point": 0.4736,
+          "fused": 0.235
+        },
+        {
+          "label": "faucet",
+          "vw": 0.0019,
+          "point": 0.4207,
+          "fused": 0.1667
+        },
+        {
+          "label": "oven",
+          "vw": 0.0129,
+          "point": 0.3625,
+          "fused": 0.1154
+        },
+        {
+          "label": "microwave",
+          "vw": 0.0019,
+          "point": 0.3578,
+          "fused": 0.09
+        },
+        {
+          "label": "kitchen",
+          "vw": 0.0036,
+          "point": 0.3198,
+          "fused": 0.0469
+        },
+        {
+          "label": "chairs",
+          "vw": 0.0015,
+          "point": 0.322,
+          "fused": 0.0458
+        },
+        {
+          "label": "chair",
+          "vw": 0.0009,
+          "point": 0.3131,
+          "fused": 0.0339
+        },
+        {
+          "label": "table",
+          "vw": 0.0087,
+          "point": 0.2853,
+          "fused": 0.014
+        }
+      ],
+      "top1": {
+        "label": "sink",
+        "fused": 0.8308
+      }
+    }
+  }
+}
